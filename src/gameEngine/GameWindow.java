@@ -4,15 +4,15 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GameWindow {
-    Canvas p1;
-    Canvas p2;
-    public GameWindow(int width, int height, String name, Game game){
+    private JFrame frame;
+
+    public GameWindow(int width, int height, String name, GameCanvas p1, GameCanvas p2, Game game){
 
         //https://javarevisited.blogspot.com/2011/04/synchronization-in-java-synchronized.html
         //https://www.geeksforgeeks.org/synchronized-in-java/
 
         //makes actual window in OS
-        JFrame frame = new JFrame(name);
+        frame = new JFrame(name);
         Dimension maxDims = new Dimension(width, height);
         Dimension splitDims = new Dimension(width/2, height);
 
@@ -33,11 +33,9 @@ public class GameWindow {
         layoutComponent.setPreferredSize(maxDims);
         layoutComponent.setMaximumSize(maxDims);
         layoutComponent.setMinimumSize(maxDims);
-        p1 = game;
         p1.setPreferredSize(splitDims);
         p1.setMaximumSize(splitDims);
         p1.setMinimumSize(splitDims);
-        p2 = game;
         p2.setPreferredSize(splitDims);
         p2.setMaximumSize(splitDims);
         p2.setMinimumSize(splitDims);
@@ -47,9 +45,10 @@ public class GameWindow {
         frame.pack();
         //makes the frame viewable/allows user to see
         frame.setVisible(true);
-
+        game.start();
     }
 
-
-
+    public JFrame getFrame() {
+        return frame;
+    }
 }

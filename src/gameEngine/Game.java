@@ -15,10 +15,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class Game extends Canvas implements Runnable {
+public class Game implements Runnable {
 //uid verifies sender and receiver of serialized object for serializable loaded class
 //    https://howtodoinjava.com/java/serialization/serialversionuid/
 private static final long serialVersionUID = 1L;
+
+    private GameCanvas playerOneCanvas;
+    private GameCanvas playerTwoCanvas;
 
     public static final int DEFAULT_WIDTH = 1000;
     public static final int DEFAULT_HEIGHT = DEFAULT_WIDTH / 12 * 9;
@@ -28,15 +31,18 @@ private static final long serialVersionUID = 1L;
     private boolean running = false;
     ObjectManager objectManager = new ObjectManager();
     private BufferedImage level;
-    private Camera p1Camera = new Camera(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);;
-    private Camera p2Camera;
+    private Camera p1Camera = new Camera(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    private Camera p2Camera = new Camera(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
 
 
     //game constructor;
     public Game(){
-        GameWindow window = new GameWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, NAME,this);
-        addKeyListener(new InputHandler(objectManager));
+        playerOneCanvas = new GameCanvas(p1Camera, objectManager);
+        playerTwoCanvas = new GameCanvas(p2Camera, objectManager);
+        GameWindow window = new GameWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, NAME,  playerOneCanvas, playerTwoCanvas, this);
+        window.getFrame().addKeyListener(new InputHandler(objectManager));
+        window.getFrame().requestFocus();
         ImageLoader imgLoader = new ImageLoader();
         level = imgLoader.loadImage("/Tanks_Level1.png");
 //        p2Camera = new Camera(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -53,7 +59,7 @@ private static final long serialVersionUID = 1L;
     @Override
     public  void run() {
         //Based on Minecraft game loop by Notch, chosen for consistent update/gameplay regardless of cpu
-        init();
+        start();
         long current;
         double elapsed = 0;
         double target = 60.0;
@@ -96,8 +102,7 @@ private static final long serialVersionUID = 1L;
         stop();
     }
 
-    public void addNotify(){
-        super.addNotify();
+    public void start(){
         if(thread == null){
             thread = new Thread(this);
             thread.start();
@@ -114,9 +119,6 @@ private static final long serialVersionUID = 1L;
         e.printStackTrace();
     }
 
-    }
-    private void init(){
-        this.requestFocus();
     }
 
     private void loadLevel(BufferedImage image){
@@ -155,32 +157,36 @@ private static final long serialVersionUID = 1L;
             if(obj.getId() == ObjectID.PlayerOne){
                p1Camera.update(obj);
             }
-//            if(obj.getId() == ObjectID.PlayerTwo){ p2Camera.update(obj);
-//            }
+            if(obj.getId() == ObjectID.PlayerTwo){
+                p2Camera.update(obj);
+            }
         }
     }
 
     private void render(){
-        BufferStrategy bs = this.getBufferStrategy();
-        //if bs null, create new triple-buffer
-        if(bs == null){
-            this.createBufferStrategy(3);
-            return;
-        }
-        Graphics g = bs.getDrawGraphics();
-        Graphics2D g2d = (Graphics2D) g;
-        /************Rendering section***********/
-        //rendering background
-        g.setColor(Color.BLACK);
-        g.fillRect(0,0,DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        g2d.translate(-p1Camera.getX(), -p1Camera.getY());
-        //objects rendered after background
-        objectManager.render(g);
-        g2d.translate(p1Camera.getX(), p1Camera.getY());
 
-        /***************************************/
-        g.dispose();
-        bs.show();
+        playerOneCanvas.render();
+        playerTwoCanvas.render();
+//        BufferStrategy bs = this.getBufferStrategy();
+//        //if bs null, create new triple-buffer
+//        if(bs == null){
+//            this.createBufferStrategy(3);
+//            return;
+//        }
+//        Graphics g = bs.getDrawGraphics();
+//        Graphics2D g2d = (Graphics2D) g;
+//        /************Rendering section***********/
+//        //rendering background
+//        g.setColor(Color.BLACK);
+//        g.fillRect(0,0,DEFAULT_WIDTH, DEFAULT_HEIGHT);
+//        g2d.translate(-p1Camera.getX(), -p1Camera.getY());
+//        //objects rendered after background
+//        objectManager.render(g);
+//        g2d.translate(p1Camera.getX(), p1Camera.getY());
+//
+//        /***************************************/
+//        g.dispose();
+//        bs.show();
     }
 
 
