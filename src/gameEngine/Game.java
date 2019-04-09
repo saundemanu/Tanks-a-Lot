@@ -1,27 +1,28 @@
 package gameEngine;
 
+import TankGame.TankGameObjects.IndestructableWall;
 import TankGame.TankGameObjects.ObjectID;
 import TankGame.TankGameObjects.Tank;
 import TankGame.TankGameObjects.Wall;
-import gameEngine.gameObjects.Camera;
+import gameEngine.RenderingUtil.Camera;
+import gameEngine.RenderingUtil.GameWindow;
 import gameEngine.gameObjects.GameObject;
 import gameEngine.gameObjects.ObjectManager;
 
 
+import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferStrategy;
+
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
 
 
-public class Game implements Runnable {
+public class Game extends JPanel implements Runnable {
 //uid verifies sender and receiver of serialized object for serializable loaded class
 //    https://howtodoinjava.com/java/serialization/serialversionuid/
 private static final long serialVersionUID = 1L;
 
-    private GameCanvas playerOneCanvas;
-    private GameCanvas playerTwoCanvas;
 
     public static final int DEFAULT_WIDTH = 1000;
     public static final int DEFAULT_HEIGHT = DEFAULT_WIDTH / 12 * 9;
@@ -30,24 +31,27 @@ private static final long serialVersionUID = 1L;
     private Thread thread;
     private boolean running = false;
     ObjectManager objectManager = new ObjectManager();
+
+    private BufferedImage world;
+    private Graphics2D bufferOne;
+    private Graphics2D bufferTwo;
     private BufferedImage level;
+    private BufferedImage map;
+    private int MAP_SCALE = 3;
     private Camera p1Camera = new Camera(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     private Camera p2Camera = new Camera(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
-
-
     //game constructor;
     public Game(){
-        playerOneCanvas = new GameCanvas(p1Camera, objectManager);
-        playerTwoCanvas = new GameCanvas(p2Camera, objectManager);
-        GameWindow window = new GameWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, NAME,  playerOneCanvas, playerTwoCanvas, this);
-        window.getFrame().addKeyListener(new InputHandler(objectManager));
-        window.getFrame().requestFocus();
+        this.setLayout(new BorderLayout());
+        new GameWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, NAME,  this);
+        this.addKeyListener(new TankGameController(objectManager));
+        this.requestFocus();
+        world = new BufferedImage(DEFAULT_WIDTH/2, DEFAULT_HEIGHT, BufferedImage.TYPE_INT_RGB);
         ImageLoader imgLoader = new ImageLoader();
         level = imgLoader.loadImage("/Tanks_Level1.png");
-//        p2Camera = new Camera(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         loadLevel(level);
-
+        map = new BufferedImage(level.getWidth() * MAP_SCALE, level.getHeight() * MAP_SCALE, BufferedImage.TYPE_INT_RGB);
     }
 
 
@@ -59,11 +63,10 @@ private static final long serialVersionUID = 1L;
     @Override
     public  void run() {
         //Based on Minecraft game loop by Notch, chosen for consistent update/gameplay regardless of cpu
-        start();
         long current;
         double elapsed = 0;
         double target = 60.0;
-        //One second in nano seconds/target refresh rate
+        //One second in nano seconds/target refresh rate in seconds
         double ns = 1000000000 / target ;
         long last = System.nanoTime();
         //thread-safe ms
@@ -81,19 +84,22 @@ private static final long serialVersionUID = 1L;
             while(elapsed >= 1){
                 //updates game state regardless of rendering
                 update();
+                try{Thread.sleep(5);}catch(Exception e){e.printStackTrace();}
                 up++;
                 elapsed--;
+                //fixes out of window clicking error
+                if(!this.hasFocus()) this.requestFocus();
             }
             //check if game state changes during last update
             if(running)
-            render();
+                repaint();
             //increment rendered frames
             FPS++;
             //calculating frame per second (1000ms = 1s)
             //Prints out current FPS rate and resets for next second
             if(System.currentTimeMillis() - timer > 1000){
-                timer += 1000;
-                System.out.println("FPS: " + FPS + "\tUpdates: " + up);
+                 timer += 1000;
+                System.out.println("FPS: " + FPS + "\tUpdates: " + up );
                 FPS = 0;
                 up = 0;
             }
@@ -102,7 +108,8 @@ private static final long serialVersionUID = 1L;
         stop();
     }
 
-    public void start(){
+    public void addNotify(){
+        super.addNotify();
         if(thread == null){
             thread = new Thread(this);
             thread.start();
@@ -121,6 +128,7 @@ private static final long serialVersionUID = 1L;
 
     }
 
+
     private void loadLevel(BufferedImage image){
         int lvlw = image.getWidth();
         int lvlh = image.getHeight();
@@ -135,16 +143,13 @@ private static final long serialVersionUID = 1L;
                  b = (currentPixel) & 0xff;
 
                 if(r == 255 && g == 255 && b == 255){
-                    levelObjects.add(new Wall(i*32, j*32, ObjectID.Wall));
+                    levelObjects.add(new IndestructableWall(i*32, j*32, ObjectID.Wall));
                 }
                 if(r == 0 && g == 0 && b == 255) {
-                    //give time to load map, fixes concurrentModificationException;
-                    levelObjects.add(new Tank(i*32, j*32, ObjectID.PlayerOne));
+                    levelObjects.add(new Tank(i*32, j*32, ObjectID.PlayerOne, objectManager, p1Camera, Color.blue));
                 }
                 if(r == 255 && g == 0 && b == 0) {
-                    //give time to load map, fixes concurrentModificationException;
-                    levelObjects.add(new Tank(i*32, j*32, ObjectID.PlayerTwo));
-
+                    levelObjects.add(new Tank(i*32, j*32, ObjectID.PlayerTwo, objectManager, p2Camera, Color.RED));
                 }
             }
         }
@@ -162,31 +167,53 @@ private static final long serialVersionUID = 1L;
             }
         }
     }
+    @Override
+    public void paintComponent(Graphics g){
+        Graphics2D g2d = (Graphics2D)g;
+        //draw bottom layer
+        bufferOne = world.createGraphics();
+        //draw minimaps;
+        bufferTwo = map.createGraphics();
 
-    private void render(){
+        super.paintComponent(g2d);
+        super.paintComponent(bufferOne);
 
-        playerOneCanvas.render();
-        playerTwoCanvas.render();
-//        BufferStrategy bs = this.getBufferStrategy();
-//        //if bs null, create new triple-buffer
-//        if(bs == null){
-//            this.createBufferStrategy(3);
-//            return;
-//        }
-//        Graphics g = bs.getDrawGraphics();
-//        Graphics2D g2d = (Graphics2D) g;
-//        /************Rendering section***********/
-//        //rendering background
-//        g.setColor(Color.BLACK);
-//        g.fillRect(0,0,DEFAULT_WIDTH, DEFAULT_HEIGHT);
-//        g2d.translate(-p1Camera.getX(), -p1Camera.getY());
-//        //objects rendered after background
-//        objectManager.render(g);
-//        g2d.translate(p1Camera.getX(), p1Camera.getY());
-//
-//        /***************************************/
-//        g.dispose();
-//        bs.show();
+        //draw p1screen
+        bufferOne.setColor(Color.BLACK);
+        bufferOne.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        //translate world for camera
+        bufferOne.translate(-p1Camera.getX(), -p1Camera.getY());
+        objectManager.drawImages(bufferOne);
+        bufferOne.translate(p1Camera.getX(), p1Camera.getY());
+
+        g2d.drawImage(world, 0, 0, null);
+        //reset bufferOne
+        super.paintComponent(bufferOne);
+
+
+        //draw p2screen
+        bufferOne.setColor(Color.BLACK);
+        bufferOne.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+
+        //translate world for camera
+        bufferOne.translate(-p2Camera.getX(), -p2Camera.getY());
+        objectManager.drawImages(bufferOne);
+        bufferOne.translate(p2Camera.getX(), p2Camera.getY());
+
+        g2d.drawImage(world, DEFAULT_WIDTH/2, 0, null);
+        g2d.setColor(Color.cyan);
+        g2d.drawLine(DEFAULT_WIDTH/2,0, DEFAULT_WIDTH/2, DEFAULT_HEIGHT);
+
+        //scale for background
+        bufferTwo.scale(MAP_SCALE,MAP_SCALE);
+        bufferTwo.setColor(Color.BLACK);
+        bufferTwo.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        //Hardcoded minimap ratio...needs fix;
+        bufferTwo.scale(315/10000d, 315/10000d);
+        objectManager.drawImages(bufferTwo);
+
+        g2d.drawImage(map, DEFAULT_WIDTH/2 - (level.getWidth() * MAP_SCALE)/2, getHeight() - level.getHeight() * MAP_SCALE, null);
+
     }
 
 

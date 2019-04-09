@@ -7,11 +7,11 @@ import gameEngine.gameObjects.ObjectManager;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class InputHandler extends KeyAdapter {
+public class TankGameController extends KeyAdapter {
     //using an adapter over a listener prevents the empty keytyped method requirement
     private ObjectManager objectManager;
 
-    public InputHandler(ObjectManager objectManager) {
+    public TankGameController(ObjectManager objectManager) {
         this.objectManager = objectManager;
     }
 
@@ -24,7 +24,7 @@ public class InputHandler extends KeyAdapter {
                 if (key == KeyEvent.VK_A) objectManager.setPlayerOneLeft(true);
                 if (key == KeyEvent.VK_S) objectManager.setPlayerOneDown(true);
                 if (key == KeyEvent.VK_D) objectManager.setPlayerOneRight(true);
-                if (key == KeyEvent.VK_SPACE) objectManager.setPlayerOneAction(true);
+                if (key == KeyEvent.VK_SPACE){objectManager.setPlayerOneAction(true);}
 
             }
             if (object.getId() == ObjectID.PlayerTwo) {

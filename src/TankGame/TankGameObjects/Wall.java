@@ -4,25 +4,27 @@ import gameEngine.gameObjects.GameObject;
 
 import java.awt.*;
 
-public class Wall extends GameObject {
+public abstract class Wall extends GameObject {
+
+    private Rectangle bounds = new Rectangle();
 
     public Wall(int x, int y, ObjectID id) {
         super(x, y, id);
+        width = 32;
+        height = 32;
     }
 
-    @Override
-    public void update() {
-
-    }
 
     @Override
-    public void render(Graphics g) {
+    public void drawImage(Graphics g) {
     g.setColor(Color.WHITE);
-    g.fillRect((int)x, (int)y, 32, 32);
+    g.fillRect((int)x, (int)y, width, height);
     }
 
     @Override
     public Rectangle getBounds() {
-        return new Rectangle((int)x, (int)y, 32, 32);
+        bounds.setBounds((int)x, (int)y, width, height);
+        return bounds;
     }
+
 }

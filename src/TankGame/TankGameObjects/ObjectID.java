@@ -4,7 +4,7 @@ public enum ObjectID {
     PlayerOne(),
     PlayerTwo(),
     Wall(),
-    BreakableWall(),
+    DestructableWall(),
     Bullet(),
     HealthItem(),
     SpeedItem(),

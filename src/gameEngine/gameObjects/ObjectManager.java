@@ -1,5 +1,6 @@
 package gameEngine.gameObjects;
 
+import TankGame.TankGameObjects.Bullet;
 import TankGame.TankGameObjects.ObjectID;
 import TankGame.TankGameObjects.Tank;
 
@@ -9,39 +10,42 @@ import java.util.LinkedList;
 
 public class ObjectManager {
     //Linkedlist over arraylist due to O(1) add  efficiency
-LinkedList<GameObject> masterObjectList = new LinkedList<>();
-LinkedList<Integer> inputList = new LinkedList<>();
+    private LinkedList<GameObject> masterObjectList = new LinkedList<>();
 
-boolean playerOneDown;
-boolean playerOneUp;
-boolean playerOneLeft;
-boolean playerOneRight;
-boolean playerOneAction;
+    private boolean playerOneDown;
+    private boolean playerOneUp;
+    private boolean playerOneLeft;
+    private boolean playerOneRight;
+    private boolean playerOneAction;
+    private LinkedList<Bullet> playerOneBullets = new LinkedList<>();
 
-boolean playerTwoDown;
-boolean playerTwoUp;
-boolean playerTwoLeft;
-boolean playerTwoRight;
-boolean playerTwoAction;
-    Tank player;
-    Tank player2;
+
+    private boolean playerTwoDown;
+    private boolean playerTwoUp;
+    private boolean playerTwoLeft;
+    private boolean playerTwoRight;
+    private boolean playerTwoAction;
+    private LinkedList<Bullet> playerTwoBullets = new LinkedList<>();
+
+
 
 public void update(){
-    //iterate through all objects in the game and update them
     for(GameObject obj : masterObjectList){
 
         if(obj.getId() == ObjectID.PlayerOne ){
-            ((Tank) obj).setMovement(playerOneUp, playerOneDown, playerOneLeft, playerOneRight);
-        }
+            ((Tank) obj).setMovement(playerOneUp, playerOneDown, playerOneLeft, playerOneRight, playerOneAction);
+        }    //iterate through all objects in the game and update them
+
         if(obj.getId() == ObjectID.PlayerTwo){
-            ((Tank) obj).setMovement(playerTwoUp, playerTwoDown, playerTwoLeft, playerTwoRight);
+            ((Tank) obj).setMovement(playerTwoUp, playerTwoDown, playerTwoLeft, playerTwoRight, playerTwoAction);
         }
-        obj.update();
+        if(obj instanceof Movable) ((Movable) obj).update();
+
     }
 }
-public void render(Graphics g) {
+public void drawImages(Graphics g) {
     for (GameObject obj : masterObjectList) {
-       obj.render(g);
+       obj.drawImage(g);
     }
 }
 
@@ -59,6 +63,9 @@ public LinkedList<GameObject> getObjectList(){
     return this.masterObjectList;
 }
 
+    public void addPlayerOneBullet(Bullet bullet){
+    playerOneBullets.add(bullet);
+    }
 
     public void setPlayerOneDown(boolean playerOneDown) {
         this.playerOneDown = playerOneDown;
