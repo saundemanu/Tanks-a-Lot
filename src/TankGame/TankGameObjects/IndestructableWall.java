@@ -7,4 +7,9 @@ public class IndestructableWall extends Wall {
         super(x, y, id);
     }
 
+    boolean destructed = false;
+
+    public boolean isDestructed() {
+        return destructed;
+    }
 }

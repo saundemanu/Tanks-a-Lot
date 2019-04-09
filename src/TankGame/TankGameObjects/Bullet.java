@@ -5,7 +5,7 @@ import gameEngine.gameObjects.Movable;
 
 import java.awt.*;
 
-public class Bullet extends GameObject implements Movable {
+public class Bullet extends GameObject implements Movable  {
 
     ObjectID owner;
 
