@@ -1,26 +1,35 @@
 package TankGame.TankGameObjects;
 
 import gameEngine.RenderingUtil.Camera;
+import gameEngine.Util.ObjectID;
 import gameEngine.gameObjects.GameObject;
 import gameEngine.gameObjects.Movable;
-import gameEngine.gameObjects.ObjectManager;
+import gameEngine.Util.ObjectManager;
 
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 public class Tank extends GameObject implements Movable {
-    private int spawnX, spawnY;
-    private Color color;
+    private int SPAWN_X, SPAWN_Y;
     private double ROTATION_SPEED = 5;
     private double MOVEMENT_SPEED = 4;
+    private final int SPAWN_DELAY = 3000; //spawn delay in ms, locks controls;
     private int MAX_LIVES;
     private int MAX_HEALTH;
+
+
     private int lives;
     private int health;
     private int ammo;
     private boolean alive = true;
-    private Rectangle bounds;
+    private long deathTime;
+
+    private Rectangle barrel;
+    private Rectangle cap;
+    private Color color;
+    private Color outline = Color.BLACK;
+    private Stroke stroke = new BasicStroke(4);
     private int angle ;
 
     private boolean up;
@@ -34,12 +43,17 @@ public class Tank extends GameObject implements Movable {
     public Tank(int x, int y, ObjectID id, ObjectManager objectManager, Camera camera, Color color){
         super(x, y, id);
         this.objectManager = objectManager;
-        width = 32;
-        height = 32;
+        width = 40;
+        height = 40;
         this.color = color;
         bounds = new Rectangle();
-        spawnX = x;
-        spawnY = y;
+        barrel = new Rectangle();
+        cap = new Rectangle();
+        SPAWN_X = x;
+        SPAWN_Y = y;
+        lives = MAX_LIVES;
+        health = MAX_HEALTH;
+
     }
 
     public void setMovement(boolean up, boolean down, boolean left, boolean right, boolean action){
@@ -51,7 +65,9 @@ public class Tank extends GameObject implements Movable {
     }
 
     public void Movement() {
+        alive = checkSpawnDelay();
         if (alive) {
+
             if(up && !down){
                 vx = (MOVEMENT_SPEED * Math.cos(Math.toRadians(angle)));
                 vy = (MOVEMENT_SPEED * Math.sin(Math.toRadians(angle)));
@@ -70,7 +86,6 @@ public class Tank extends GameObject implements Movable {
                 angle += ROTATION_SPEED;
 
             }if(fire){
-                objectManager.addPlayerOneBullet(new Bullet((int)(x/2 + 1), (int)(y/2 + 1), vx, vy, getId()));
             }
 
 
@@ -83,7 +98,7 @@ public class Tank extends GameObject implements Movable {
     private void collision(){
         for(GameObject gameObject : objectManager.getObjectList()){
             if(getBounds().intersects(gameObject.getBounds()) && !gameObject.equals(this)){
-                  if(gameObject instanceof IndestructableWall){
+                  if(gameObject instanceof IndestructibleWall){
                       wallCollision = true;
                   }
                   if(gameObject instanceof Tank && !gameObject.equals(this)){
@@ -92,8 +107,13 @@ public class Tank extends GameObject implements Movable {
 
             }
         } if(wallCollision || playerCollision){
-            x += vx * -1;
-            y += vy * -1;
+            if(up) {
+                x += vx * -1;
+                y += vy * -1;
+            }if(down){
+                x -= vx * -1;
+                y -= vy * -1;
+            }
             wallCollision = false;
             if(playerCollision){
                 playerCollision = false;
@@ -115,21 +135,51 @@ public class Tank extends GameObject implements Movable {
 
     }
 
+    private void killed(){
+        lives--;
+        alive = false;
+        if(lives > 0){
+            deathTime = System.currentTimeMillis();
+            //respawn
+            x = SPAWN_X;
+            y = SPAWN_Y;
+            health = MAX_HEALTH;
+        } else System.out.println(getId() + "is out of lives");
+    }
+
+    private boolean checkSpawnDelay(){
+        return (System.currentTimeMillis() - deathTime) >= SPAWN_DELAY;
+    }
 
 
 
     @Override
     public void drawImage(Graphics g) {
-        Graphics2D g2d = (Graphics2D)g.create();
-        g2d.setColor(color);
-        Rectangle rectangle = bounds;
-        Rectangle small = new Rectangle((int)(x/2), (int)(y/2), 8, 16);
-        AffineTransform transform = new AffineTransform();
-        transform.rotate(Math.toRadians(angle), x  + height /2d, y + width /2d);
-        Shape tf = transform.createTransformedShape(rectangle);
-        AffineTransform old = g2d.getTransform();
-        g2d.fill(tf);
-        g2d.setTransform(old);
-//        g2d.dispose();
+        if(alive) {
+            Graphics2D g2d = (Graphics2D) g.create();
+            bounds.setBounds((int) x, (int) y, width, height);
+            barrel.setBounds((int) x + width - width / 4, (int) y + height / 2 - height / 8, 3 * width / 4, height / 4);
+            cap.setBounds((int) x + width / 4, (int) y + height / 4, width / 2, height / 2);
+            AffineTransform transform = new AffineTransform();
+            transform.rotate(Math.toRadians(angle), x + height / 2d, y + width / 2d);
+            Shape base = transform.createTransformedShape(bounds);
+            Shape mid = transform.createTransformedShape(barrel);
+            Shape top = transform.createTransformedShape(cap);
+            AffineTransform old = g2d.getTransform();
+            g2d.setStroke(stroke);
+            g2d.setColor(outline);
+            g2d.draw(base);
+            g2d.setColor(color);
+            g2d.fill(base);
+            g2d.setColor(outline);
+            g2d.draw(mid);
+            g2d.setColor(color);
+            g2d.fill(mid);
+            g2d.setColor(outline);
+            g2d.draw(top);
+            g2d.setColor(color);
+            g2d.fill(top);
+            g2d.setTransform(old);
+        }
     }
 }
