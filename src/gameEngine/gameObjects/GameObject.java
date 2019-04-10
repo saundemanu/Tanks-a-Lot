@@ -1,6 +1,6 @@
 package gameEngine.gameObjects;
 
-import TankGame.TankGameObjects.ObjectID;
+import gameEngine.Util.ObjectID;
 
 import java.awt.*;
 
@@ -9,8 +9,8 @@ public abstract class GameObject {
 protected double x, y;
 protected double vx = 0, vy  =0;
 protected int height, width;
+protected Rectangle bounds;
 private ObjectID id;
-private Rectangle bounds;
 
 //constructor
 public  GameObject(int x, int y, ObjectID id){

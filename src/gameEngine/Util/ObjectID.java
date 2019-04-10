@@ -1,4 +1,4 @@
-package TankGame.TankGameObjects;
+package gameEngine.Util;
 
 public enum ObjectID {
     PlayerOne(),

@@ -1,8 +1,6 @@
-package gameEngine;
+package gameEngine.Util;
 
-import TankGame.TankGameObjects.ObjectID;
 import gameEngine.gameObjects.GameObject;
-import gameEngine.gameObjects.ObjectManager;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

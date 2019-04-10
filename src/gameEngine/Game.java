@@ -1,13 +1,14 @@
 package gameEngine;
 
-import TankGame.TankGameObjects.IndestructableWall;
-import TankGame.TankGameObjects.ObjectID;
+import TankGame.TankGameObjects.IndestructibleWall;
+import gameEngine.Util.ObjectID;
 import TankGame.TankGameObjects.Tank;
-import TankGame.TankGameObjects.Wall;
 import gameEngine.RenderingUtil.Camera;
 import gameEngine.RenderingUtil.GameWindow;
+import gameEngine.RenderingUtil.ImageLoader;
+import gameEngine.Util.TankGameController;
 import gameEngine.gameObjects.GameObject;
-import gameEngine.gameObjects.ObjectManager;
+import gameEngine.Util.ObjectManager;
 
 
 import javax.swing.*;
@@ -33,11 +34,12 @@ private static final long serialVersionUID = 1L;
     ObjectManager objectManager = new ObjectManager();
 
     private BufferedImage world;
+    private BufferedImage p1screen;
     private Graphics2D bufferOne;
     private Graphics2D bufferTwo;
     private BufferedImage level;
     private BufferedImage map;
-    private int MAP_SCALE = 3;
+    private int MAP_SCALE = 32;
     private Camera p1Camera = new Camera(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     private Camera p2Camera = new Camera(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
@@ -47,11 +49,10 @@ private static final long serialVersionUID = 1L;
         new GameWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, NAME,  this);
         this.addKeyListener(new TankGameController(objectManager));
         this.requestFocus();
-        world = new BufferedImage(DEFAULT_WIDTH/2, DEFAULT_HEIGHT, BufferedImage.TYPE_INT_RGB);
         ImageLoader imgLoader = new ImageLoader();
         level = imgLoader.loadImage("/Tanks_Level1.png");
         loadLevel(level);
-        map = new BufferedImage(level.getWidth() * MAP_SCALE, level.getHeight() * MAP_SCALE, BufferedImage.TYPE_INT_RGB);
+
     }
 
 
@@ -130,12 +131,10 @@ private static final long serialVersionUID = 1L;
 
 
     private void loadLevel(BufferedImage image){
-        int lvlw = image.getWidth();
-        int lvlh = image.getHeight();
         int r,g,b, currentPixel;
         List<GameObject> levelObjects = new LinkedList<>();
-        for(int i = 0; i < lvlw; i++){
-            for(int j = 0; j < lvlh; j++ ) {
+        for(int i = 0; i < level.getWidth(); i++){
+            for(int j = 0; j < level.getHeight(); j++ ) {
                 currentPixel = image.getRGB(i, j);
                 //comparing bits to white value 255
                 r = (currentPixel >> 16) & 0xff;
@@ -143,10 +142,10 @@ private static final long serialVersionUID = 1L;
                  b = (currentPixel) & 0xff;
 
                 if(r == 255 && g == 255 && b == 255){
-                    levelObjects.add(new IndestructableWall(i*32, j*32, ObjectID.Wall));
+                    levelObjects.add(new IndestructibleWall(i*32, j*32, ObjectID.Wall));
                 }
                 if(r == 0 && g == 0 && b == 255) {
-                    levelObjects.add(new Tank(i*32, j*32, ObjectID.PlayerOne, objectManager, p1Camera, Color.blue));
+                    levelObjects.add(new Tank(i*32, j*32, ObjectID.PlayerOne, objectManager, p1Camera, Color.BLUE));
                 }
                 if(r == 255 && g == 0 && b == 0) {
                     levelObjects.add(new Tank(i*32, j*32, ObjectID.PlayerTwo, objectManager, p2Camera, Color.RED));
@@ -167,16 +166,37 @@ private static final long serialVersionUID = 1L;
             }
         }
     }
+
+    //paint demonstrated in class, tested at ~4.4 million renders/second
+//    @Override
+//    public void paintComponent(Graphics g){
+//        Graphics2D g2d = (Graphics2D)g;
+//        world = (BufferedImage)createImage(2048, 2048);
+//        bufferOne = world.createGraphics();
+//        super.paintComponent(g2d);
+//
+//        bufferOne.setColor(Color.black);
+//        bufferOne.fillRect(0,0,2048, 2048);
+//        objectManager.drawImages(bufferOne);
+//        p1screen = world.getSubimage((int)p1Camera.getX(), (int)p1Camera.getY(), getWidth()/2, getHeight());
+//        g2d.drawImage(p1screen, 0,0, null);
+//        p1screen =  world.getSubimage((int)p2Camera.getX(), (int)p2Camera.getY(), getWidth()/2, getHeight());
+//        g2d.drawImage(p1screen, DEFAULT_WIDTH/2, 0, null);
+//        g2d.drawLine(DEFAULT_WIDTH/2, 0, DEFAULT_WIDTH/2, DEFAULT_HEIGHT);
+//        g2d.scale(0.1, 0.1);
+//        g2d.drawImage(world, (DEFAULT_WIDTH) * 5 - getWidth() , DEFAULT_HEIGHT + getHeight() * 2 , null);
+//    }
+
+    //self-paint, rendering at 4.5 million renders/second
     @Override
     public void paintComponent(Graphics g){
         Graphics2D g2d = (Graphics2D)g;
-        //draw bottom layer
+        world = (BufferedImage)createImage(DEFAULT_WIDTH/2, DEFAULT_HEIGHT);
         bufferOne = world.createGraphics();
-        //draw minimaps;
+        map = (BufferedImage)createImage(level.getWidth() * MAP_SCALE/10, level.getHeight() * MAP_SCALE/10);
         bufferTwo = map.createGraphics();
 
         super.paintComponent(g2d);
-        super.paintComponent(bufferOne);
 
         //draw p1screen
         bufferOne.setColor(Color.BLACK);
@@ -200,19 +220,19 @@ private static final long serialVersionUID = 1L;
         objectManager.drawImages(bufferOne);
         bufferOne.translate(p2Camera.getX(), p2Camera.getY());
 
+        //splitscreen line, helps clarity
         g2d.drawImage(world, DEFAULT_WIDTH/2, 0, null);
         g2d.setColor(Color.cyan);
         g2d.drawLine(DEFAULT_WIDTH/2,0, DEFAULT_WIDTH/2, DEFAULT_HEIGHT);
 
-        //scale for background
-        bufferTwo.scale(MAP_SCALE,MAP_SCALE);
+        //scale for map bg
         bufferTwo.setColor(Color.BLACK);
         bufferTwo.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         //Hardcoded minimap ratio...needs fix;
-        bufferTwo.scale(315/10000d, 315/10000d);
+        bufferTwo.scale(.1, .1);
         objectManager.drawImages(bufferTwo);
 
-        g2d.drawImage(map, DEFAULT_WIDTH/2 - (level.getWidth() * MAP_SCALE)/2, getHeight() - level.getHeight() * MAP_SCALE, null);
+        g2d.drawImage(map, DEFAULT_WIDTH/2 - map.getWidth()/2  , DEFAULT_HEIGHT - 6 * map.getHeight()/5, null);
 
     }
 

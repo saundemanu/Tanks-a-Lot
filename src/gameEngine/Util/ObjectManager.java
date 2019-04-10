@@ -1,8 +1,9 @@
-package gameEngine.gameObjects;
+package gameEngine.Util;
 
 import TankGame.TankGameObjects.Bullet;
-import TankGame.TankGameObjects.ObjectID;
 import TankGame.TankGameObjects.Tank;
+import gameEngine.gameObjects.GameObject;
+import gameEngine.gameObjects.Movable;
 
 import java.awt.*;
 import java.util.Collection;
@@ -17,7 +18,6 @@ public class ObjectManager {
     private boolean playerOneLeft;
     private boolean playerOneRight;
     private boolean playerOneAction;
-    private LinkedList<Bullet> playerOneBullets = new LinkedList<>();
 
 
     private boolean playerTwoDown;
@@ -25,7 +25,6 @@ public class ObjectManager {
     private boolean playerTwoLeft;
     private boolean playerTwoRight;
     private boolean playerTwoAction;
-    private LinkedList<Bullet> playerTwoBullets = new LinkedList<>();
 
 
 
@@ -63,9 +62,7 @@ public LinkedList<GameObject> getObjectList(){
     return this.masterObjectList;
 }
 
-    public void addPlayerOneBullet(Bullet bullet){
-    playerOneBullets.add(bullet);
-    }
+
 
     public void setPlayerOneDown(boolean playerOneDown) {
         this.playerOneDown = playerOneDown;
