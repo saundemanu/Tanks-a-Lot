@@ -1,6 +1,4 @@
-package gameEngine.gameObjects.TankGameObjects.PlayerAssets;
-
-import gameEngine.gameObjects.StatusBar;
+package gameEngine.gameObjects.TankGameObjects.PlayerAssets.UI;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;

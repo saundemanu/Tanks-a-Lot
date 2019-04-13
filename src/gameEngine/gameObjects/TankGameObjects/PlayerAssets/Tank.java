@@ -1,10 +1,16 @@
 package gameEngine.gameObjects.TankGameObjects.PlayerAssets;
 
+import gameEngine.gameObjects.TankGameObjects.LevelAssets.Item;
+import gameEngine.gameObjects.TankGameObjects.LevelAssets.AmmoCrate;
 import gameEngine.gameObjects.TankGameObjects.LevelAssets.DestructibleWall;
 import gameEngine.gameObjects.TankGameObjects.LevelAssets.Wall;
 import gameEngine.Util.ObjectID;
 import gameEngine.gameObjects.GameObject;
 import gameEngine.Util.ObjectManager;
+import gameEngine.gameObjects.TankGameObjects.LevelAssets.HealthBoost;
+import gameEngine.gameObjects.TankGameObjects.PlayerAssets.UI.AmmoBar;
+import gameEngine.gameObjects.TankGameObjects.PlayerAssets.UI.HealthBar;
+import gameEngine.gameObjects.TankGameObjects.PlayerAssets.UI.LifeCount;
 
 
 import java.awt.*;
@@ -61,7 +67,6 @@ public class Tank extends GameObject {
         playerColor = color;
         drawColor = playerColor;
 
-        bounds = new Rectangle();
         base = new Rectangle();
         barrel = new Rectangle();
         cap = new Rectangle();
@@ -138,6 +143,16 @@ public class Tank extends GameObject {
                 }
             }
             }
+     for(Item i : objectManager.getItemList()){
+         if(i.getBounds().intersects(getBounds()) && i.isActive()){
+             if(i instanceof AmmoCrate){
+                 ammo = (i.getStat());
+             }else if(i instanceof HealthBoost){
+                 health = i.getStat();
+             }
+             i.used();
+         }
+     }
         for(Tank t : objectManager.getTankList()) {
             if(t.equals(this)) continue;
             if(t.getBounds().intersects(getBounds())) collision = true;
@@ -167,10 +182,6 @@ public class Tank extends GameObject {
             y -= vy * -1;
         }
         collision = false;
-    }
-
-    public boolean isAlive() {
-        return alive;
     }
 
     @Override

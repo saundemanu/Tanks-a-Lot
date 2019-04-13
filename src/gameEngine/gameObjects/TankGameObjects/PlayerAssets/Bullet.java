@@ -11,7 +11,6 @@ public class Bullet extends GameObject  {
     private ObjectID owner;
     private int TRAVEL_SPEED = 20;
 
-    private Rectangle bounds;
     private int damage = 10;
     private int MAX_COLLISIONS = 10;
     private int rebounds;
@@ -22,7 +21,6 @@ public class Bullet extends GameObject  {
         height = 16;
         width = 16;
         this.owner = owner;
-        bounds = new Rectangle();
         active = true;
     }
 
@@ -40,8 +38,10 @@ public class Bullet extends GameObject  {
 
     @Override
     public void drawImage(Graphics g) {
-         g.setColor(Color.GREEN);
+         g.setColor(Color.MAGENTA);
          g.fillOval((int)x, (int)y, width, height);
+        g.setColor(Color.lightGray);
+        g.drawOval((int)x, (int)y, width, height);
     }
 
     @Override
@@ -75,16 +75,19 @@ public class Bullet extends GameObject  {
             double top = bulBottom - obj.getY();
             double left = bulRight - obj.getX();
             double right = objRight - getX();
-
+            //top collision
             if (top < bottom && top < left && top < right) {
                 vy *= -1;
             }
+            //bottom collision
             else if (bottom < top && bottom < left && bottom < right) {
                 vy *= -1;
             }
+            //left collision
             else if (left < right && left < top && left < bottom){
                 vx *= -1;
             }
+            //right collision
             else if (right < left && right < top && right < bottom) {
                 vx *= -1;
         }

@@ -13,7 +13,6 @@ import javax.swing.*;
 import java.awt.*;
 
 import java.awt.image.BufferedImage;
-import java.util.logging.Level;
 
 
 public class Game extends JPanel implements Runnable {

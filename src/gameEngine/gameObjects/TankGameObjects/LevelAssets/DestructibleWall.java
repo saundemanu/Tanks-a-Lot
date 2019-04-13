@@ -4,7 +4,7 @@ import gameEngine.Util.ObjectID;
 
 import java.awt.*;
 
-public class DestructibleWall extends Wall{
+public class DestructibleWall extends Wall {
     public DestructibleWall(int x, int y, ObjectID id) {
         super(x, y, id);
     }

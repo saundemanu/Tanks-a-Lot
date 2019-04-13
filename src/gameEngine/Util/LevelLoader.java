@@ -1,6 +1,8 @@
 package gameEngine.Util;
 
+import gameEngine.gameObjects.TankGameObjects.LevelAssets.AmmoCrate;
 import gameEngine.gameObjects.TankGameObjects.LevelAssets.DestructibleWall;
+import gameEngine.gameObjects.TankGameObjects.LevelAssets.HealthBoost;
 import gameEngine.gameObjects.TankGameObjects.LevelAssets.IndestructibleWall;
 import gameEngine.gameObjects.TankGameObjects.PlayerAssets.Tank;
 import gameEngine.RenderingUtil.ImageLoader;
@@ -45,15 +47,22 @@ public class LevelLoader {
                 if(r == 255 && g == 255 && b == 255){
                     levelObjects.add(new IndestructibleWall(i* scale, j* scale, ObjectID.IndestructibleWall));
                 }
-                if(r == 153 && g == 153 && b == 153){
+                else if(r == 153 && g == 153 && b == 153){
                     levelObjects.add(new DestructibleWall(i* scale, j* scale, ObjectID.DestructibleWall));
                 }
-                if(r == 0 && g == 0 && b == 255) {
+                else if(r == 0 && g == 255 && b == 255){
+                    levelObjects.add(new AmmoCrate(i* scale, j* scale, ObjectID.AmmoItem));
+                }
+                else if(r == 0 && g == 255 && b == 0){
+                    levelObjects.add(new HealthBoost(i* scale, j* scale, ObjectID.HealthItem));
+                }
+                else if(r == 0 && g == 0 && b == 255) {
                     levelObjects.add(new Tank(i* scale, j* scale, ObjectID.PlayerOne, objectManager, Color.BLUE));
                 }
-                if(r == 255 && g == 0 && b == 0) {
+                else if(r == 255 && g == 0 && b == 0) {
                     levelObjects.add(new Tank(i* scale, j* scale, ObjectID.PlayerTwo, objectManager, Color.RED));
                 }
+
 
             }
         }

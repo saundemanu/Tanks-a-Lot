@@ -8,20 +8,24 @@ public class HealthBoost extends Item {
 
     public HealthBoost(int x, int y, ObjectID id) {
         super(x, y, id);
-        stat = 10;
+        bounds.setBounds(x, y, width, height);
+        stat = 30;
     }
 
     @Override
     public void drawImage(Graphics g) {
         if(isActive()){
-            g.setColor(Color.gray);
-
+            Graphics2D g2d = (Graphics2D)g;
+            g2d.setColor(Color.GREEN);
+            g2d.fill(bounds);
+            g2d.setColor(Color.lightGray);
+            g2d.draw(bounds);
 
         }
     }
 
     @Override
     public Rectangle getBounds() {
-        return null;
+        return bounds;
     }
 }

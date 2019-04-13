@@ -1,5 +1,6 @@
 package gameEngine.Util;
 
+import gameEngine.gameObjects.TankGameObjects.LevelAssets.Item;
 import gameEngine.gameObjects.TankGameObjects.LevelAssets.Wall;
 import gameEngine.gameObjects.TankGameObjects.PlayerAssets.Tank;
 
@@ -14,6 +15,7 @@ public class ObjectManager {
 
 
     private LinkedList<Wall> wallList = new LinkedList<>();
+    private LinkedList<Item> itemList = new LinkedList<>();
     private LinkedList<Tank> tankList = new LinkedList<>();
     private boolean respawning;
     private boolean gameOver;
@@ -23,6 +25,10 @@ public class ObjectManager {
     private boolean playerOneRight;
     private boolean playerOneAction;
     private ObjectID winner;
+
+    public LinkedList<Item> getItemList() {
+        return itemList;
+    }
 
     private boolean playerTwoDown;
     private boolean playerTwoUp;
@@ -35,6 +41,7 @@ public class ObjectManager {
         for(GameObject obj : list){
             if(obj instanceof Wall){wallList.add((Wall)obj);}
             if(obj instanceof Tank){tankList.add((Tank)obj);}
+            if(obj instanceof Item){itemList.add((Item)obj);}
         }
     }
 
@@ -49,6 +56,9 @@ public class ObjectManager {
              }
              t.update();
          }
+         for(Item i: itemList){
+             i.respawn();
+         }
 
         }
 
@@ -59,6 +69,9 @@ public class ObjectManager {
     public void respawn(){
         for(Tank t : tankList){
             t.respawn();
+        }
+        for(Item i : itemList){
+            i.respawn();
         }
     }
 
@@ -88,12 +101,16 @@ public class ObjectManager {
 
     public void drawImages(Graphics g) {
 
-       for(Wall wall: wallList){
-           wall.drawImage(g);
+       for(Wall w: wallList){
+           w.drawImage(g);
        }
+        for(Item i : itemList){
+            i.drawImage(g);
+        }
       for(Tank t : tankList){
           t.drawImage(g);
       }
+
     }
 
 

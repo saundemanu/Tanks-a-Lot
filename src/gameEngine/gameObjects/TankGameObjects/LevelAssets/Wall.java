@@ -11,7 +11,7 @@ import java.awt.*;
      protected boolean destructed;
 
 
-     Wall(int x, int y, ObjectID id) {
+     protected Wall(int x, int y, ObjectID id) {
         super(x, y, id);
         width = 32;
         height = 32;

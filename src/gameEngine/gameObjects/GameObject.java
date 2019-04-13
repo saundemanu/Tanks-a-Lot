@@ -17,6 +17,7 @@ public  GameObject(int x, int y, ObjectID id){
 this.x = x;
 this.y=  y;
 this.id = id;
+bounds = new Rectangle();
 }
 
     public ObjectID getId(){
