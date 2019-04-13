@@ -1,6 +1,7 @@
 package gameEngine;
 
-import TankGame.TankGameObjects.IndestructibleWall;
+import TankGame.TankGameObjects.LevelItems.IndestructibleWall;
+import gameEngine.Util.LevelLoader;
 import gameEngine.Util.ObjectID;
 import TankGame.TankGameObjects.PlayerAssets.Tank;
 import gameEngine.RenderingUtil.Camera;
@@ -36,7 +37,6 @@ private static final long serialVersionUID = 1L;
     private BufferedImage world;
     private Graphics2D bufferOne;
     private Graphics2D bufferTwo;
-    private BufferedImage level;
     private BufferedImage map;
     private int MAP_SCALE = 32;
     private Camera p1Camera = new Camera(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -47,11 +47,10 @@ private static final long serialVersionUID = 1L;
     public Game(){
         this.setLayout(new BorderLayout());
         window = new GameWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, NAME,  this);
-        this.addKeyListener(new TankGameController(objectManager, this));
+        this.addKeyListener(new TankGameController(objectManager));
         this.requestFocus();
-        ImageLoader imgLoader = new ImageLoader();
-        level = imgLoader.loadImage("/Tanks_Level1.png");
-        loadLevel(level);
+        LevelLoader levelLoader = new LevelLoader(objectManager, MAP_SCALE);
+        levelLoader.loadLevel("/Tanks_Level1.png");
 
 
     }
@@ -133,41 +132,15 @@ private static final long serialVersionUID = 1L;
     }
 
 
-    private void loadLevel(BufferedImage image){
-        int r,g,b, currentPixel;
-        List<GameObject> levelObjects = new LinkedList<>();
-        for(int i = 0; i < level.getWidth(); i++){
-            for(int j = 0; j < level.getHeight(); j++ ) {
-                currentPixel = image.getRGB(i, j);
-                //comparing bits to white value 255
-                r = (currentPixel >> 16) & 0xff;
-                 g = (currentPixel >> 8) & 0xff;
-                 b = (currentPixel) & 0xff;
-
-                if(r == 255 && g == 255 && b == 255){
-                    levelObjects.add(new IndestructibleWall(i*32, j*32, ObjectID.Wall));
-                }
-                if(r == 0 && g == 0 && b == 255) {
-                    levelObjects.add(new Tank(i*32, j*32, ObjectID.PlayerOne, objectManager, Color.BLUE));
-                }
-                if(r == 255 && g == 0 && b == 0) {
-                    levelObjects.add(new Tank(i*32, j*32, ObjectID.PlayerTwo, objectManager, Color.RED));
-                }
-            }
-        }
-        objectManager.addObjectList(levelObjects);
-    }
 
     private void update(){
         objectManager.update();
+        for(Tank t : objectManager.getTankList()) {
+            if(t.getId() == ObjectID.PlayerOne)
+            p1Camera.update(t);
+            else if(t.getId() == ObjectID.PlayerTwo)
+            p2Camera.update(t);
 
-        for(GameObject obj: objectManager.getObjectList()){
-            if(obj.getId() == ObjectID.PlayerOne){
-               p1Camera.update(obj);
-            }
-            if(obj.getId() == ObjectID.PlayerTwo){
-                p2Camera.update(obj);
-            }
         }
     }
 

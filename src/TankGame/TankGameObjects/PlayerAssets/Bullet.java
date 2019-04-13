@@ -56,6 +56,7 @@ public class Bullet extends GameObject implements Movable {
     }
 
     int getDamage() {
+        active = false;
         return damage;
     }
 
@@ -64,7 +65,6 @@ public class Bullet extends GameObject implements Movable {
     }
 
     public void collision(GameObject obj){
-    if(obj instanceof Tank && ((Tank)obj).isAlive()) active = false;
         if(rebounds < MAX_COLLISIONS && active) {
             double objBottom = obj.getY() + obj.getHeight();
             double objRight = obj.getX() + obj.getWidth();

@@ -1,22 +1,23 @@
-package TankGame.TankGameObjects;
-
+package TankGame.TankGameObjects.LevelItems;
 
 import gameEngine.Util.ObjectID;
-import gameEngine.gameObjects.GameObject;
 
 import java.awt.*;
 
-public abstract class Item extends GameObject {
-    double buff;
-    double nerf;
+public class HealthBoost extends Item {
 
-    public Item(int x, int y, ObjectID id) {
+    public HealthBoost(int x, int y, ObjectID id) {
         super(x, y, id);
+        stat = 10;
     }
 
     @Override
     public void drawImage(Graphics g) {
+        if(isActive()){
+            g.setColor(Color.gray);
 
+
+        }
     }
 
     @Override

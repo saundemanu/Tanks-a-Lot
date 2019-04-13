@@ -41,6 +41,6 @@ this.id = id;
 
     //pass the graphic to the render to be drawn on
     public abstract void drawImage(Graphics g);
-    //using rectangle-based handleCollision boxes
+    //using rectangle-based collision boxes
     public abstract Rectangle getBounds();
 }

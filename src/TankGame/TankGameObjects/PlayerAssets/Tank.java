@@ -1,6 +1,6 @@
 package TankGame.TankGameObjects.PlayerAssets;
 
-import TankGame.TankGameObjects.Wall;
+import TankGame.TankGameObjects.LevelItems.Wall;
 import gameEngine.Util.ObjectID;
 import gameEngine.gameObjects.GameObject;
 import gameEngine.gameObjects.Movable;
@@ -9,6 +9,7 @@ import gameEngine.Util.ObjectManager;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
 public class Tank extends GameObject implements Movable {
@@ -121,29 +122,29 @@ public class Tank extends GameObject implements Movable {
     }
 
     private void checkCollision() {
-        for (GameObject gameObject : objectManager.getObjectList()) {
-            if (getBounds().intersects(gameObject.getBounds()) && !gameObject.equals(this)) {
-                if (gameObject instanceof Wall) {
+     for (Wall wall : objectManager.getWallList()) {
+            if (getBounds().intersects(wall.getBounds())) {
                     collision = true;
                 }
-                if (gameObject instanceof Tank && !gameObject.equals(this)) {
-                    if (((Tank) gameObject).isAlive()) collision = true;
+            for(Bullet b: clip){
+                if (b.getBounds().intersects(wall.getBounds())){
+                    if(b.isActive())
+                    b.collision(wall);
+                    else clipBuffer.add(b);
                 }
             }
+            }
+        for(Tank t : objectManager.getTankList()) {
+            if(t.equals(this)) continue;
+            if(t.getBounds().intersects(getBounds())) collision = true;
             for (Bullet b : clip) {
-                if (b.getBounds().intersects(gameObject.getBounds()) && gameObject.getId() != b.getOwner()) {
-                    if (b.isActive()) {
-                        if (gameObject instanceof Tank) {
-                            ((Tank) gameObject).damage(b.getDamage());
-                        } else {
-                            b.collision(gameObject);
-                        }
-                    } else {
-                        clipBuffer.add(b);
-                    }
+                if (t.getBounds().intersects(b.getBounds()) && b.getOwner() != t.getId()) {
+                    t.damage(b.getDamage());
+                    clipBuffer.add(b);
                 }
             }
         }
+
         clip.removeAll(clipBuffer);
         clipBuffer.clear();
 
@@ -202,10 +203,7 @@ public class Tank extends GameObject implements Movable {
         System.out.println(getId() + " died");
         if (lives > 0) {
             //respawn
-            for (GameObject obj : objectManager.getObjectList()) {
-                if (obj instanceof Tank)
-                    ((Tank) obj).respawn();
-            }
+           objectManager.respawn();
 
         } else System.out.println(getId() + " is out of lives");
     }
