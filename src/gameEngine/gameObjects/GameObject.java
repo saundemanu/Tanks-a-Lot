@@ -31,10 +31,16 @@ this.id = id;
         return y;
     }
 
+    public int getHeight() {
+        return height;
+    }
 
+    public int getWidth() {
+        return width;
+    }
 
     //pass the graphic to the render to be drawn on
     public abstract void drawImage(Graphics g);
-    //using rectangle-based collision boxes
+    //using rectangle-based handleCollision boxes
     public abstract Rectangle getBounds();
 }

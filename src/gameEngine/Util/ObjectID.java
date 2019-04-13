@@ -7,6 +7,5 @@ public enum ObjectID {
     DestructableWall(),
     Bullet(),
     HealthItem(),
-    SpeedItem(),
-    AmmoItem()
+    AmmoItem(),
 }

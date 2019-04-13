@@ -5,8 +5,8 @@ import gameEngine.Game;
 import javax.swing.*;
 import java.awt.*;
 
-public class GameWindow {
-    private JFrame frame;
+
+public class GameWindow extends JFrame {
 
     public GameWindow(int width, int height, String name, Game game){
 
@@ -14,27 +14,31 @@ public class GameWindow {
         //https://www.geeksforgeeks.org/synchronized-in-java/
 
         //makes actual window in OS
-        frame = new JFrame(name);
+        super(name);
         Dimension maxDims = new Dimension(width, height);
 
         //setting window size
-        frame.setPreferredSize(maxDims);
-        frame.setMaximumSize(maxDims);
-        frame.setMinimumSize(maxDims);
+        this.setPreferredSize(maxDims);
+        this.setMaximumSize(maxDims);
+        this.setMinimumSize(maxDims);
         //prevents resizing TODO: Add resizing menu
-        frame.setResizable(false);
+        this.setResizable(false);
 
         //sets location of gui in center
-        frame.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(null);
         //links close button to exit
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+
+
         //add game JPanel to frame
-        frame.add(game);
-        frame.toFront();
-        frame.pack();
-        frame.setAlwaysOnTop(true);
+        this.add(game);
+        this.toFront();
+        this.pack();
+        this.setAlwaysOnTop(true);
         //makes the frame viewable/allows user to see
-        frame.setVisible(true);
+        this.setVisible(true);
+
     }
 
 }

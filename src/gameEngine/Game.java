@@ -2,7 +2,7 @@ package gameEngine;
 
 import TankGame.TankGameObjects.IndestructibleWall;
 import gameEngine.Util.ObjectID;
-import TankGame.TankGameObjects.Tank;
+import TankGame.TankGameObjects.PlayerAssets.Tank;
 import gameEngine.RenderingUtil.Camera;
 import gameEngine.RenderingUtil.GameWindow;
 import gameEngine.RenderingUtil.ImageLoader;
@@ -34,7 +34,6 @@ private static final long serialVersionUID = 1L;
     ObjectManager objectManager = new ObjectManager();
 
     private BufferedImage world;
-    private BufferedImage p1screen;
     private Graphics2D bufferOne;
     private Graphics2D bufferTwo;
     private BufferedImage level;
@@ -42,16 +41,18 @@ private static final long serialVersionUID = 1L;
     private int MAP_SCALE = 32;
     private Camera p1Camera = new Camera(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     private Camera p2Camera = new Camera(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    private GameWindow window;
 
     //game constructor;
     public Game(){
         this.setLayout(new BorderLayout());
-        new GameWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, NAME,  this);
-        this.addKeyListener(new TankGameController(objectManager));
+        window = new GameWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, NAME,  this);
+        this.addKeyListener(new TankGameController(objectManager, this));
         this.requestFocus();
         ImageLoader imgLoader = new ImageLoader();
         level = imgLoader.loadImage("/Tanks_Level1.png");
         loadLevel(level);
+
 
     }
 
@@ -85,7 +86,7 @@ private static final long serialVersionUID = 1L;
             while(elapsed >= 1){
                 //updates game state regardless of rendering
                 update();
-                try{Thread.sleep(5);}catch(Exception e){e.printStackTrace();}
+                try{Thread.sleep(1000/144);}catch(Exception e){e.printStackTrace();}
                 up++;
                 elapsed--;
                 //fixes out of window clicking error
@@ -119,7 +120,9 @@ private static final long serialVersionUID = 1L;
     }
 
 
+
     private void stop(){
+
     try{
         thread.join();
         running = false;
@@ -145,10 +148,10 @@ private static final long serialVersionUID = 1L;
                     levelObjects.add(new IndestructibleWall(i*32, j*32, ObjectID.Wall));
                 }
                 if(r == 0 && g == 0 && b == 255) {
-                    levelObjects.add(new Tank(i*32, j*32, ObjectID.PlayerOne, objectManager, p1Camera, Color.BLUE));
+                    levelObjects.add(new Tank(i*32, j*32, ObjectID.PlayerOne, objectManager, Color.BLUE));
                 }
                 if(r == 255 && g == 0 && b == 0) {
-                    levelObjects.add(new Tank(i*32, j*32, ObjectID.PlayerTwo, objectManager, p2Camera, Color.RED));
+                    levelObjects.add(new Tank(i*32, j*32, ObjectID.PlayerTwo, objectManager, Color.RED));
                 }
             }
         }
@@ -157,6 +160,7 @@ private static final long serialVersionUID = 1L;
 
     private void update(){
         objectManager.update();
+
         for(GameObject obj: objectManager.getObjectList()){
             if(obj.getId() == ObjectID.PlayerOne){
                p1Camera.update(obj);
@@ -187,15 +191,15 @@ private static final long serialVersionUID = 1L;
 //        g2d.drawImage(world, (DEFAULT_WIDTH) * 5 - getWidth() , DEFAULT_HEIGHT + getHeight() * 2 , null);
 //    }
 
-    //self-paint, rendering at 4.5 million renders/second
+    //self-paint, rendering at 4.5 million renders/second, throws null p exception w/o hardcoded level dims
     @Override
     public void paintComponent(Graphics g){
         Graphics2D g2d = (Graphics2D)g;
-        world = (BufferedImage)createImage(DEFAULT_WIDTH/2, DEFAULT_HEIGHT);
+        world = new BufferedImage(DEFAULT_WIDTH/2, DEFAULT_HEIGHT, BufferedImage.TYPE_INT_RGB);
         bufferOne = world.createGraphics();
-        map = (BufferedImage)createImage(level.getWidth() * MAP_SCALE/10, level.getHeight() * MAP_SCALE/10);
-        bufferTwo = map.createGraphics();
 
+        map = new BufferedImage(64 * MAP_SCALE/10, 64 * MAP_SCALE/10, BufferedImage.TYPE_INT_RGB);
+        bufferTwo = map.createGraphics();
         super.paintComponent(g2d);
 
         //draw p1screen
@@ -219,11 +223,14 @@ private static final long serialVersionUID = 1L;
         bufferOne.translate(-p2Camera.getX(), -p2Camera.getY());
         objectManager.drawImages(bufferOne);
         bufferOne.translate(p2Camera.getX(), p2Camera.getY());
+        //done with bufferOne
+        bufferOne.dispose();
 
         //splitscreen line, helps clarity
         g2d.drawImage(world, DEFAULT_WIDTH/2, 0, null);
         g2d.setColor(Color.cyan);
         g2d.drawLine(DEFAULT_WIDTH/2,0, DEFAULT_WIDTH/2, DEFAULT_HEIGHT);
+
 
         //scale for map bg
         bufferTwo.setColor(Color.BLACK);
@@ -235,6 +242,5 @@ private static final long serialVersionUID = 1L;
         g2d.drawImage(map, DEFAULT_WIDTH/2 - map.getWidth()/2  , DEFAULT_HEIGHT - 6 * map.getHeight()/5, null);
 
     }
-
 
 }

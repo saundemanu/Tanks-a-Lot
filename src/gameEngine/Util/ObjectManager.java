@@ -1,17 +1,23 @@
 package gameEngine.Util;
 
-import TankGame.TankGameObjects.Bullet;
-import TankGame.TankGameObjects.Tank;
+import TankGame.TankGameObjects.PlayerAssets.Tank;
+import TankGame.TankGameObjects.Wall;
+import com.sun.jdi.connect.spi.TransportService;
 import gameEngine.gameObjects.GameObject;
 import gameEngine.gameObjects.Movable;
 
 import java.awt.*;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 public class ObjectManager {
     //Linkedlist over arraylist due to O(1) add  efficiency
     private LinkedList<GameObject> masterObjectList = new LinkedList<>();
+    private  LinkedList<GameObject> buffer = new LinkedList<>();
+
+    private LinkedList<Tank> tankList = new LinkedList<>();
+    private LinkedList<Wall> wallList = new LinkedList<>();
 
     private boolean playerOneDown;
     private boolean playerOneUp;
@@ -29,11 +35,17 @@ public class ObjectManager {
 
 
 public void update(){
+    if(!buffer.isEmpty()){
+        for(GameObject obj: buffer){
+            masterObjectList.add(obj);
+            buffer.remove(obj);
+        }
+    }
     for(GameObject obj : masterObjectList){
 
         if(obj.getId() == ObjectID.PlayerOne ){
             ((Tank) obj).setMovement(playerOneUp, playerOneDown, playerOneLeft, playerOneRight, playerOneAction);
-        }    //iterate through all objects in the game and update them
+    }    //iterate through all objects in the game and update them
 
         if(obj.getId() == ObjectID.PlayerTwo){
             ((Tank) obj).setMovement(playerTwoUp, playerTwoDown, playerTwoLeft, playerTwoRight, playerTwoAction);
@@ -43,17 +55,16 @@ public void update(){
     }
 }
 public void drawImages(Graphics g) {
+
     for (GameObject obj : masterObjectList) {
        obj.drawImage(g);
     }
 }
 
 public void addObject(GameObject obj){
-    masterObjectList.add(obj);
+    buffer.add(obj);
     }
-public void removeObject(GameObject obj){
-    masterObjectList.remove(obj);
-}
+
 public void addObjectList(Collection<GameObject> objList){
     masterObjectList.addAll(objList);
 }
@@ -62,7 +73,12 @@ public LinkedList<GameObject> getObjectList(){
     return this.masterObjectList;
 }
 
-
+public void addTankList(Collection<Tank> tankCollection){
+    this.tankList.addAll(tankCollection);
+}
+public void addWallList(Collection<Wall> wallCollection){
+        this.wallList.addAll(wallCollection);
+}
 
     public void setPlayerOneDown(boolean playerOneDown) {
         this.playerOneDown = playerOneDown;

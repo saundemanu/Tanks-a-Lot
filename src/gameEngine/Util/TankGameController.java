@@ -1,5 +1,6 @@
 package gameEngine.Util;
 
+import gameEngine.Game;
 import gameEngine.gameObjects.GameObject;
 
 import java.awt.event.KeyAdapter;
@@ -8,9 +9,11 @@ import java.awt.event.KeyEvent;
 public class TankGameController extends KeyAdapter {
     //using an adapter over a listener prevents the empty keytyped method requirement
     private ObjectManager objectManager;
+    private Game game;
 
-    public TankGameController(ObjectManager objectManager) {
+    public TankGameController(ObjectManager objectManager, Game game) {
         this.objectManager = objectManager;
+        this.game = game;
     }
 
     @Override

@@ -22,9 +22,6 @@ public class Camera {
             if (y >= 1325) y = 1325;
     }
 
-    public void render(){
-
-    }
 
     public float getX() {
         return x;
