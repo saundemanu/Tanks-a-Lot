@@ -5,7 +5,7 @@ import java.awt.*;
 public abstract class StatusBar {
 
     private int MAX_STATUS;
-    protected int status;
+    int status;
 
     public StatusBar(int status, int MAX_STATUS) {
         this.status = status;

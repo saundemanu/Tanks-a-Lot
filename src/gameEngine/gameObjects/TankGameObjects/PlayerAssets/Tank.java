@@ -18,28 +18,36 @@ import java.awt.geom.AffineTransform;
 import java.util.LinkedList;
 
 public class Tank extends GameObject {
+    //Gameplay modifiers/stats
     private int SPAWN_X, SPAWN_Y;
-    private double ROTATION_SPEED = 5;
-    private double MOVEMENT_SPEED = 6;
+    private final double ROTATION_SPEED = 5;
+    private final double MOVEMENT_SPEED = 6;
     private final int SPAWN_DELAY = 3000; //spawn delay in ms, locks controls;
-    private int MAX_LIVES = 3;
-    private int MAX_HEALTH = 30;
-    private int MAX_AMMO = 10;
+    private final int MAX_LIVES = 3;
+    private final int MAX_HEALTH = 30;
+    private final int MAX_AMMO = 10;
     private final int FIRING_DELAY = 1000;
+    //Tank UI
     private HealthBar healthbar;
     private LifeCount lifeCount;
     private AmmoBar ammoBar;
-    private boolean outOfLives;
 
+    //stat trackers
+    private boolean outOfLives;
     private int lives;
     private int health;
     private int ammo;
+
+
+    //list of active bullets
     private LinkedList<Bullet> clip = new LinkedList();
+    //list of dead bullets, prevents concurrent Modification exception
     private LinkedList<Bullet> clipBuffer = new LinkedList<>();
     private boolean alive = true;
     private long deathTime = 0;
     private long firedTime = 0;
 
+    //tank drawing
     private Rectangle base;
     private Rectangle barrel;
     private Rectangle cap;
@@ -48,7 +56,7 @@ public class Tank extends GameObject {
     private Color outline = Color.BLACK;
     private Stroke stroke = new BasicStroke(4);
     private int angle;
-
+//controls
     private boolean up;
     private boolean left;
     private boolean down;
@@ -145,9 +153,11 @@ public class Tank extends GameObject {
         for (Item i : objectManager.getItemList()) {
             if (i.getBounds().intersects(getBounds()) && i.isActive()) {
                 if (i instanceof AmmoCrate) {
-                    ammo = (i.getStat());
+                    for(Tank t: objectManager.getTankList())
+                        t.ammo = (i.getStat());
                 } else if (i instanceof HealthBoost) {
-                    health = i.getStat();
+                    for(Tank t: objectManager.getTankList())
+                        t.health = (i.getStat());
                 }
                 i.used();
             }
@@ -157,7 +167,10 @@ public class Tank extends GameObject {
             if (t.getBounds().intersects(getBounds())) collision = true;
             for (Bullet b : clip) {
                 if (t.getBounds().intersects(b.getBounds()) && b.getOwner() != t.getId()) {
-                    t.damage(b.getDamage());
+                    for(Tank tank : objectManager.getTankList()) {
+                       if(t.getId() == tank.getId())
+                        tank.damage(b.getDamage());
+                    }
                     clipBuffer.add(b);
                 }
             }

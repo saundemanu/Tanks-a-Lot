@@ -18,7 +18,7 @@ public class Game extends JPanel implements Runnable {
 //    https://howtodoinjava.com/java/serialization/serialversionuid/
     private static final long serialVersionUID = 1L;
 
-
+    private int gamestate;
     public static final int DEFAULT_WIDTH = 1000;
     public static final int DEFAULT_HEIGHT = DEFAULT_WIDTH / 12 * 9;
     private final String NAME = "Tanks A Lot";
@@ -27,8 +27,6 @@ public class Game extends JPanel implements Runnable {
     private boolean running = false;
     ObjectManager objectManager = new ObjectManager();
 
-    private BufferedImage world;
-    private Graphics2D bufferOne;
     //    private Graphics2D bufferTwo;
 //    private BufferedImage map;
     private int MAP_SCALE = 32;
@@ -37,14 +35,14 @@ public class Game extends JPanel implements Runnable {
     private LevelLoader levelLoader;
 
     //game constructor;
-    public Game() {
+    private Game() {
         this.setLayout(new BorderLayout());
         new GameWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, NAME, this);
         this.addKeyListener(new TankGameController(objectManager));
         this.requestFocus();
         levelLoader = new LevelLoader(objectManager, MAP_SCALE);
         levelLoader.loadLevel("/Tanks_Level1.png");
-
+        gamestate = 1;
 
     }
 
@@ -92,7 +90,7 @@ public class Game extends JPanel implements Runnable {
             //Prints out current FPS rate and resets for next second
             if (System.currentTimeMillis() - timer > 1000) {
                 timer += 1000;
-                System.out.println("FPS: " + FPS + "\tUpdates: " + up);
+                System.out.println("FPS: " + FPS + "\tUpdates: " + up + "\tState: " + gamestate);
                 FPS = 0;
                 up = 0;
             }
@@ -130,8 +128,28 @@ public class Game extends JPanel implements Runnable {
                 p1Camera.update(t);
             else if (t.getId() == ObjectID.PlayerTwo)
                 p2Camera.update(t);
-
         }
+        if (objectManager.isGameOver()) {
+            if (gamestate == 3) {
+                gamestate = -1;
+            } else {
+                levelLoader.loadLevel("/Tanks_Level2.png");
+                gamestate = 2;
+            }
+        } else if (gamestate == 2) {
+            try{Thread.sleep(5000);}catch (Exception e){e.printStackTrace();}
+            gamestate = 3;
+        } else if (objectManager.isRespawning()) {
+            gamestate = 0;
+        } else if (gamestate < 2) {
+            gamestate = 1;
+        }
+        //Key:
+        //-1 is Game End
+        //0 is respawning
+        //1 is Map 1 Playing
+        //2 is load Map 2
+        //3 is Map 2 playing
     }
 
     //paint demonstrated in class, tested at ~4 million renders/second
@@ -139,10 +157,10 @@ public class Game extends JPanel implements Runnable {
     public void paintComponent(Graphics g) {
         BufferedImage p1screen;
         Graphics2D g2d = (Graphics2D) g;
-        world = (BufferedImage) createImage(2048, 2048);
-        bufferOne = world.createGraphics();
+        BufferedImage world = (BufferedImage) createImage(2048, 2048);
+        Graphics2D bufferOne = world.createGraphics();
         super.paintComponent(g2d);
-        if (objectManager.isRespawning()) {
+        if (gamestate == 0) {
             g2d.setColor(Color.BLACK);
             g2d.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
             Stroke temp = g2d.getStroke();
@@ -153,7 +171,18 @@ public class Game extends JPanel implements Runnable {
                     DEFAULT_WIDTH / 2 + 64, DEFAULT_HEIGHT / 2);
 
             g2d.setStroke(temp);
-        } else if (objectManager.isGameOver()) {
+        } else if (gamestate == 2) {
+            g2d.setColor(Color.BLACK);
+            g2d.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+            Stroke temp = g2d.getStroke();
+            g2d.setStroke(new BasicStroke(2));
+            g2d.setColor(Color.white);
+
+            g2d.drawString("Level 2...Loading",
+                    DEFAULT_WIDTH / 2 + 64, DEFAULT_HEIGHT / 2);
+
+            g2d.setStroke(temp);
+        } else if (gamestate == -1) {
             g2d.setColor(Color.BLACK);
             g2d.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
             Stroke temp = g2d.getStroke();

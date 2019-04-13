@@ -25,7 +25,7 @@ public class Bullet extends GameObject {
     }
 
 
-    public void update() {
+     void update() {
         x += vx;
         y += vy;
 
@@ -59,11 +59,11 @@ public class Bullet extends GameObject {
         return damage;
     }
 
-    public boolean isActive() {
+     boolean isActive() {
         return active;
     }
 
-    public void collision(GameObject obj) {
+     void collision(GameObject obj) {
         if (obj instanceof DestructibleWall) rebounds += 2;
         if (rebounds < MAX_COLLISIONS && active) {
             double objBottom = obj.getY() + obj.getHeight();
@@ -78,18 +78,22 @@ public class Bullet extends GameObject {
             //top collision
             if (top < bottom && top < left && top < right) {
                 vy *= -1;
+                vx *= .9;
             }
             //bottom collision
             else if (bottom < top && bottom < left && bottom < right) {
                 vy *= -1;
+                vx *= .9;
             }
             //left collision
             else if (left < right && left < top && left < bottom) {
                 vx *= -1;
+                vy *= .9;
             }
             //right collision
             else if (right < left && right < top && right < bottom) {
                 vx *= -1;
+                vy *= .9;
             }
             rebounds++;
         } else active = false;

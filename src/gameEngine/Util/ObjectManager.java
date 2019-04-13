@@ -20,7 +20,6 @@ public class ObjectManager {
     private LinkedList<Item> itemList = new LinkedList<>();
     private LinkedList<Tank> tankList = new LinkedList<>();
     private boolean respawning;
-    private boolean gameOver;
     private boolean playerOneDown;
     private boolean playerOneUp;
     private boolean playerOneLeft;
@@ -40,6 +39,7 @@ public class ObjectManager {
 
 
      void init(Collection<GameObject> list){
+         clear();
         for(GameObject obj : list){
             if(obj instanceof Wall){wallList.add((Wall)obj);}
             if(obj instanceof Tank){tankList.add((Tank)obj);}
@@ -90,16 +90,17 @@ public class ObjectManager {
 
     public boolean isGameOver(){
          for(Tank t:tankList){
-             gameOver = t.isOutOfLives();
-            if(gameOver) {
+            if(t.isOutOfLives()) {
                 for (Tank tank : tankList) {
-                    if(!tank.isOutOfLives())
-                    winner = tank.getId();
+                    if(!tank.isOutOfLives()) {
+                        winner = tank.getId();
+                        return true;
+                    }
                 }
             }
          }
 
-         return gameOver;
+         return false;
     }
 
     public ObjectID getWinner() {
@@ -119,6 +120,14 @@ public class ObjectManager {
           t.drawImage(g);
       }
 
+    }
+    private void clear(){
+         if(!itemList.isEmpty())
+         itemList.clear();
+        if(!wallList.isEmpty())
+         wallList.clear();
+        if(!tankList.isEmpty())
+         tankList.clear();
     }
 
 

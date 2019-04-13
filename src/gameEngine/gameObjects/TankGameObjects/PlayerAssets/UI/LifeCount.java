@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
 public class LifeCount extends StatusBar {
-    Ellipse2D[] oval;
+    private Ellipse2D[] oval;
 
     public LifeCount(int status, int MAX_STATUS) {
         super(status, MAX_STATUS);
@@ -19,8 +19,8 @@ public class LifeCount extends StatusBar {
     public void update(int x, int y, int status) {
         for (int i = 0; i < getMAX_STATUS(); i++) {
             oval[i].setFrame(x - (15 * i), y + 72, 10, 10);
-
         }
+        this.status = status;
     }
 
     @Override
