@@ -1,10 +1,8 @@
-package TankGame.TankGameObjects.LevelItems;
+package gameEngine.gameObjects.TankGameObjects.LevelAssets;
 
 
 import gameEngine.Util.ObjectID;
 import gameEngine.gameObjects.GameObject;
-
-import java.awt.*;
 
 
 abstract class Item extends GameObject {
@@ -17,15 +15,15 @@ abstract class Item extends GameObject {
 
 
 
-    public Item(int x, int y, ObjectID id) {
+    protected Item(int x, int y, ObjectID id) {
         super(x, y, id);
     }
 
-    int getStat(){
+    public int getStat(){
         return this.stat;
     }
 
-    boolean isActive(){
+    public boolean isActive(){
         return this.active;
     }
 

@@ -1,8 +1,8 @@
 package gameEngine.Util;
 
-import TankGame.TankGameObjects.LevelItems.DestructibleWall;
-import TankGame.TankGameObjects.LevelItems.IndestructibleWall;
-import TankGame.TankGameObjects.PlayerAssets.Tank;
+import gameEngine.gameObjects.TankGameObjects.LevelAssets.DestructibleWall;
+import gameEngine.gameObjects.TankGameObjects.LevelAssets.IndestructibleWall;
+import gameEngine.gameObjects.TankGameObjects.PlayerAssets.Tank;
 import gameEngine.RenderingUtil.ImageLoader;
 import gameEngine.gameObjects.GameObject;
 
@@ -15,6 +15,7 @@ public class LevelLoader {
     private ObjectManager objectManager;
     private int scale;
     ImageLoader imgLoad;
+    private int width = 2048, height = 2048;
 
     public LevelLoader( ObjectManager objectManager ,int scale) {
         imgLoad = new ImageLoader();
@@ -31,7 +32,8 @@ public class LevelLoader {
         int r,g,b, currentPixel;
         //buffer
         List<GameObject> levelObjects = new LinkedList<>();
-
+        this.width = levelImage.getWidth() * scale;
+        this.height = levelImage.getHeight() * scale;
         for(int i = 0; i < levelImage.getWidth(); i++){
             for(int j = 0; j < levelImage.getHeight(); j++ ) {
                 currentPixel = levelImage.getRGB(i, j);
@@ -56,5 +58,13 @@ public class LevelLoader {
             }
         }
         objectManager.init(levelObjects);
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

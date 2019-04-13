@@ -1,20 +1,19 @@
-package TankGame.TankGameObjects.PlayerAssets;
+package gameEngine.gameObjects.TankGameObjects.PlayerAssets;
 
+import gameEngine.gameObjects.TankGameObjects.LevelAssets.DestructibleWall;
 import gameEngine.Util.ObjectID;
-import gameEngine.Util.ObjectManager;
 import gameEngine.gameObjects.GameObject;
-import gameEngine.gameObjects.Movable;
 
 import java.awt.*;
 
-public class Bullet extends GameObject implements Movable {
+public class Bullet extends GameObject  {
 
     private ObjectID owner;
-    private int TRAVEL_SPEED = 15;
+    private int TRAVEL_SPEED = 20;
 
     private Rectangle bounds;
     private int damage = 10;
-    private int MAX_COLLISIONS = 20;
+    private int MAX_COLLISIONS = 10;
     private int rebounds;
     private boolean active;
 
@@ -27,7 +26,7 @@ public class Bullet extends GameObject implements Movable {
         active = true;
     }
 
-    @Override
+
     public void update() {
         x += vx;
         y += vy;
@@ -65,6 +64,7 @@ public class Bullet extends GameObject implements Movable {
     }
 
     public void collision(GameObject obj){
+        if(obj instanceof DestructibleWall) rebounds +=2;
         if(rebounds < MAX_COLLISIONS && active) {
             double objBottom = obj.getY() + obj.getHeight();
             double objRight = obj.getX() + obj.getWidth();

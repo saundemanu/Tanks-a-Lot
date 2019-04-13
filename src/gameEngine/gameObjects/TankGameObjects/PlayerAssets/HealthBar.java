@@ -1,4 +1,4 @@
-package TankGame.TankGameObjects.PlayerAssets;
+package gameEngine.gameObjects.TankGameObjects.PlayerAssets;
 
 import gameEngine.gameObjects.StatusBar;
 
@@ -26,5 +26,8 @@ public class HealthBar extends StatusBar {
         g2d.setColor(Color.GREEN);
         top.setBounds(base.x, base.y, base.width * status/this.getMAX_STATUS(), base.height);
         g2d.fill(top);
+        if(status <= getMAX_STATUS()/3){
+            g2d.drawString("Low Health!", base.x, base.y + 32);
+        }
     }
 }

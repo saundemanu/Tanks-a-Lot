@@ -1,28 +1,29 @@
-package TankGame.TankGameObjects.PlayerAssets;
+package gameEngine.gameObjects.TankGameObjects.PlayerAssets;
 
-import TankGame.TankGameObjects.LevelItems.Wall;
+import gameEngine.gameObjects.TankGameObjects.LevelAssets.DestructibleWall;
+import gameEngine.gameObjects.TankGameObjects.LevelAssets.Wall;
 import gameEngine.Util.ObjectID;
 import gameEngine.gameObjects.GameObject;
-import gameEngine.gameObjects.Movable;
 import gameEngine.Util.ObjectManager;
 
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
-public class Tank extends GameObject implements Movable {
+public class Tank extends GameObject {
     private int SPAWN_X, SPAWN_Y;
     private double ROTATION_SPEED = 5;
-    private double MOVEMENT_SPEED = 4;
+    private double MOVEMENT_SPEED = 6;
     private final int SPAWN_DELAY = 3000; //spawn delay in ms, locks controls;
     private int MAX_LIVES = 3;
     private int MAX_HEALTH = 30;
-    private int MAX_AMMO = 5;
+    private int MAX_AMMO = 10;
     private final int FIRING_DELAY = 1000;
     private HealthBar healthbar;
-
+    private LifeCount lifeCount;
+    private AmmoBar ammoBar;
+    private boolean outOfLives;
 
     private int lives;
     private int health;
@@ -70,6 +71,8 @@ public class Tank extends GameObject implements Movable {
         health = MAX_HEALTH;
         ammo = MAX_AMMO;
         healthbar = new HealthBar(health, MAX_HEALTH);
+        lifeCount = new LifeCount(lives, MAX_LIVES);
+        ammoBar = new AmmoBar(ammo, MAX_AMMO);
     }
 
     public void setMovement(boolean up, boolean down, boolean left, boolean right, boolean action) {
@@ -80,8 +83,8 @@ public class Tank extends GameObject implements Movable {
         this.fire = action;
     }
 
-    public void Movement() {
-        alive = checkRespawn();
+    private void Movement() {
+        alive = (checkSpawnDelay() && lives > 0);
         if (alive) {
             if (up && !down) {
                 vx = (MOVEMENT_SPEED * Math.cos(Math.toRadians(angle)));
@@ -111,8 +114,6 @@ public class Tank extends GameObject implements Movable {
                         clip.add(bullet);
                         ammo--;
                         firedTime = System.currentTimeMillis();
-                    } else {
-                        ammo += MAX_AMMO;
                     }
                 }
 
@@ -123,12 +124,15 @@ public class Tank extends GameObject implements Movable {
 
     private void checkCollision() {
      for (Wall wall : objectManager.getWallList()) {
-            if (getBounds().intersects(wall.getBounds())) {
+            if (getBounds().intersects(wall.getBounds()) && !wall.isDestructed()) {
                     collision = true;
                 }
             for(Bullet b: clip){
                 if (b.getBounds().intersects(wall.getBounds())){
-                    if(b.isActive())
+                    if(wall instanceof DestructibleWall){
+                        ((DestructibleWall) wall).destruct();
+                    }
+                    else if(b.isActive())
                     b.collision(wall);
                     else clipBuffer.add(b);
                 }
@@ -175,7 +179,6 @@ public class Tank extends GameObject implements Movable {
         return bounds;
     }
 
-    @Override
     public void update() {
         Movement();
         for (Bullet b : clip) {
@@ -183,7 +186,8 @@ public class Tank extends GameObject implements Movable {
         }
         checkCollision();
         healthbar.update((int) x, (int) y, health);
-
+        lifeCount.update((int) x, (int) y, lives);
+        ammoBar.update((int) x, (int) y, ammo);
     }
 
     private void damage(int amount) {
@@ -205,13 +209,22 @@ public class Tank extends GameObject implements Movable {
             //respawn
            objectManager.respawn();
 
-        } else System.out.println(getId() + " is out of lives");
+        } else {
+            System.out.println(getId() + " is out of lives");
+            outOfLives = true;
+        }
+    }
+
+    public boolean isOutOfLives() {
+        return outOfLives;
     }
 
     //checks difference in death time, return true if ready to respawn;
-    private boolean checkRespawn() {
-        return (System.currentTimeMillis() - deathTime) >= SPAWN_DELAY && lives > 0;
+    public boolean checkSpawnDelay() {
+        return (System.currentTimeMillis() - deathTime) >= SPAWN_DELAY;
     }
+
+
 
     public void respawn() {
         x = SPAWN_X;
@@ -252,6 +265,8 @@ public class Tank extends GameObject implements Movable {
             g2d.fill(top);
             g2d.setTransform(old);
             healthbar.drawImage(g2d);
+            lifeCount.drawImage(g2d);
+            ammoBar.drawImage(g2d);
         }
     }
 }

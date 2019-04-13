@@ -1,7 +1,7 @@
 package gameEngine.Util;
 
-import TankGame.TankGameObjects.LevelItems.Wall;
-import TankGame.TankGameObjects.PlayerAssets.Tank;
+import gameEngine.gameObjects.TankGameObjects.LevelAssets.Wall;
+import gameEngine.gameObjects.TankGameObjects.PlayerAssets.Tank;
 
 import gameEngine.gameObjects.GameObject;
 
@@ -15,12 +15,14 @@ public class ObjectManager {
 
     private LinkedList<Wall> wallList = new LinkedList<>();
     private LinkedList<Tank> tankList = new LinkedList<>();
+    private boolean respawning;
+    private boolean gameOver;
     private boolean playerOneDown;
     private boolean playerOneUp;
     private boolean playerOneLeft;
     private boolean playerOneRight;
     private boolean playerOneAction;
-
+    private ObjectID winner;
 
     private boolean playerTwoDown;
     private boolean playerTwoUp;
@@ -58,6 +60,30 @@ public class ObjectManager {
         for(Tank t : tankList){
             t.respawn();
         }
+    }
+
+
+    public boolean isRespawning() {
+         for(Tank t:tankList) respawning = !t.checkSpawnDelay();
+        return respawning;
+    }
+
+    public boolean isGameOver(){
+         for(Tank t:tankList){
+             gameOver = t.isOutOfLives();
+            if(gameOver) {
+                for (Tank tank : tankList) {
+                    if(!tank.isOutOfLives())
+                    winner = tank.getId();
+                }
+            }
+         }
+
+         return gameOver;
+    }
+
+    public ObjectID getWinner() {
+        return winner;
     }
 
     public void drawImages(Graphics g) {
