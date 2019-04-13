@@ -3,8 +3,8 @@ package gameEngine.gameObjects.TankGameObjects.PlayerAssets.UI;
 import java.awt.*;
 
 public class HealthBar extends StatusBar {
-    private Rectangle base;
-    private Rectangle top;
+    private  Rectangle base;
+    private  Rectangle top;
 
     public HealthBar(int health, int maxHealth) {
         super(health, maxHealth);

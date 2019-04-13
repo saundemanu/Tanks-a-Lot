@@ -5,7 +5,7 @@ import gameEngine.gameObjects.GameObject;
 
 public class Camera {
     private float x, y;
-    private int viewWidth, viewHeight;
+    private final int viewWidth, viewHeight;
 
     public Camera(float x, float y, int viewWidth, int viewHeight) {
         this.x = x;

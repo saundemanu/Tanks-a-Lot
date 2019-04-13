@@ -3,8 +3,8 @@ package gameEngine.gameObjects.TankGameObjects.PlayerAssets.UI;
 import java.awt.*;
 
 public class AmmoBar extends StatusBar {
-    private Rectangle base;
-    private Rectangle top;
+    private  Rectangle base;
+    private  Rectangle top;
 
     public AmmoBar(int ammo, int maxAmmo) {
         super(ammo, maxAmmo);

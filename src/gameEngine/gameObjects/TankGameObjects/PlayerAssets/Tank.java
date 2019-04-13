@@ -22,7 +22,7 @@ public class Tank extends GameObject {
     private int SPAWN_X, SPAWN_Y;
     private final double ROTATION_SPEED = 5;
     private final double MOVEMENT_SPEED = 6;
-    private final int SPAWN_DELAY = 3000; //spawn delay in ms, locks controls;
+    private final int SPAWN_DELAY = 5000; //spawn delay in ms, locks controls;
     private final int MAX_LIVES = 3;
     private final int MAX_HEALTH = 30;
     private final int MAX_AMMO = 10;
@@ -152,13 +152,10 @@ public class Tank extends GameObject {
         }
         for (Item i : objectManager.getItemList()) {
             if (i.getBounds().intersects(getBounds()) && i.isActive()) {
-                if (i instanceof AmmoCrate) {
-                    for (Tank t : objectManager.getTankList())
-                        t.ammo = (i.getStat());
-                } else if (i instanceof HealthBoost) {
-                    for (Tank t : objectManager.getTankList())
-                        t.health = (i.getStat());
-                }
+                if (i instanceof AmmoCrate)
+                        ammo = (i.getStat());
+                else if (i instanceof HealthBoost)
+                        health = (i.getStat());
                 i.used();
             }
         }
@@ -167,10 +164,8 @@ public class Tank extends GameObject {
             if (t.getBounds().intersects(getBounds())) collision = true;
             for (Bullet b : clip) {
                 if (t.getBounds().intersects(b.getBounds()) && b.getOwner() != t.getId()) {
-                    for (Tank tank : objectManager.getTankList()) {
-                        if (t.getId() == tank.getId())
-                            tank.damage(b.getDamage());
-                    }
+                            t.damage(b.getDamage());
+
                     clipBuffer.add(b);
                 }
             }
@@ -184,7 +179,7 @@ public class Tank extends GameObject {
         }
     }
 
-    public void handleCollision() {
+    private void handleCollision() {
         if (up) {
             x += vx * -1;
             y += vy * -1;

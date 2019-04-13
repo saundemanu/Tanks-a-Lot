@@ -8,10 +8,10 @@ import java.awt.*;
 public abstract class Wall extends GameObject {
 
 
-    protected boolean destructed;
+     boolean destructed;
 
 
-    protected Wall(int x, int y, ObjectID id) {
+     Wall(int x, int y, ObjectID id) {
         super(x, y, id);
         width = 32;
         height = 32;

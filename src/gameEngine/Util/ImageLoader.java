@@ -3,7 +3,7 @@ package gameEngine.Util;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
-public class ImageLoader {
+ class ImageLoader {
     private BufferedImage img;
 
     public BufferedImage loadImage(String path) {

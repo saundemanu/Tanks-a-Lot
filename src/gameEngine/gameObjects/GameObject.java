@@ -8,10 +8,10 @@ public abstract class GameObject {
     protected double vx = 0, vy = 0;
     protected int height, width;
     protected Rectangle bounds;
-    private ObjectID id;
+    private final ObjectID id;
 
     //constructor
-    public GameObject(int x, int y, ObjectID id) {
+    protected GameObject(int x, int y, ObjectID id) {
         this.x = x;
         this.y = y;
         this.id = id;

@@ -9,10 +9,10 @@ import java.awt.*;
 public class Bullet extends GameObject {
 
     private ObjectID owner;
-    private int TRAVEL_SPEED = 20;
+    private final int TRAVEL_SPEED = 20;
+    private final int damage = 10;
+    private final int MAX_COLLISIONS = 10;
 
-    private int damage = 10;
-    private int MAX_COLLISIONS = 10;
     private int rebounds;
     private boolean active;
 

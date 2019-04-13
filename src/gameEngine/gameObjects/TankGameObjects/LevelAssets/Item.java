@@ -10,7 +10,7 @@ public abstract class Item extends GameObject {
     private boolean active;
     private final long SPAWN_DELAY = 15000;
     private long SpawnTimer;
-    protected int width = 32, height = 32;
+    protected final int width = 32, height = 32;
 
 
     protected Item(int x, int y, ObjectID id) {

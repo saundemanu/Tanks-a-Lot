@@ -16,7 +16,7 @@ import java.util.List;
 public class LevelLoader {
     private ObjectManager objectManager;
     private int scale;
-    ImageLoader imgLoad;
+    private ImageLoader imgLoad;
     private int width = 2048, height = 2048;
 
     public LevelLoader(ObjectManager objectManager, int scale) {

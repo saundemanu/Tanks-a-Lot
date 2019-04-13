@@ -13,26 +13,26 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 
-public class Game extends JPanel implements Runnable {
+class Game extends JPanel implements Runnable {
     //uid verifies sender and receiver of serialized object for serializable loaded class
 //    https://howtodoinjava.com/java/serialization/serialversionuid/
     private static final long serialVersionUID = 1L;
 
     private int gamestate;
-    public static final int DEFAULT_WIDTH = 1000;
-    public static final int DEFAULT_HEIGHT = DEFAULT_WIDTH / 12 * 9;
+    private static final int DEFAULT_WIDTH = 1000;
+    private static final int DEFAULT_HEIGHT = DEFAULT_WIDTH / 12 * 9;
     private final String NAME = "Tanks A Lot";
 
     private Thread thread;
     private boolean running = false;
-    ObjectManager objectManager = new ObjectManager();
+    private final ObjectManager objectManager = new ObjectManager();
 
     //    private Graphics2D bufferTwo;
 //    private BufferedImage map;
-    private int MAP_SCALE = 32;
+    private final int MAP_SCALE = 32;
     private Camera p1Camera = new Camera(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     private Camera p2Camera = new Camera(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-    private LevelLoader levelLoader;
+    private final LevelLoader levelLoader;
 
     //game constructor;
     private Game() {
