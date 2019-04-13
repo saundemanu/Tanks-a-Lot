@@ -141,7 +141,7 @@ private static final long serialVersionUID = 1L;
         }
     }
 
-    //paint demonstrated in class, tested at ~4.4 million renders/second
+    //paint demonstrated in class, tested at ~4 million renders/second
     @Override
     public void paintComponent(Graphics g) {
         BufferedImage p1screen;
@@ -176,6 +176,7 @@ private static final long serialVersionUID = 1L;
             bufferOne.setColor(Color.black);
             bufferOne.fillRect(0, 0, 2048, 2048);
             objectManager.drawImages(bufferOne);
+            //method renders overall smoother but camera transitions lose float precision
             //player 1
             p1screen = world.getSubimage((int) p1Camera.getX(), (int) p1Camera.getY(), getWidth() / 2, getHeight());
             g2d.drawImage(p1screen, 0, 0, null);
