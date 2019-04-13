@@ -25,7 +25,7 @@ public class Bullet extends GameObject {
     }
 
 
-     void update() {
+    void update() {
         x += vx;
         y += vy;
 
@@ -59,11 +59,11 @@ public class Bullet extends GameObject {
         return damage;
     }
 
-     boolean isActive() {
+    boolean isActive() {
         return active;
     }
 
-     void collision(GameObject obj) {
+    void collision(GameObject obj) {
         if (obj instanceof DestructibleWall) rebounds += 2;
         if (rebounds < MAX_COLLISIONS && active) {
             double objBottom = obj.getY() + obj.getHeight();

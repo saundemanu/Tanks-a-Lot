@@ -4,22 +4,22 @@ import java.awt.*;
 
 
 public abstract class GameObject {
-protected double x, y;
-protected double vx = 0, vy  =0;
-protected int height, width;
-protected Rectangle bounds;
-private ObjectID id;
+    protected double x, y;
+    protected double vx = 0, vy = 0;
+    protected int height, width;
+    protected Rectangle bounds;
+    private ObjectID id;
 
-//constructor
-public  GameObject(int x, int y, ObjectID id){
-this.x = x;
-this.y=  y;
-this.id = id;
-bounds = new Rectangle();
-}
+    //constructor
+    public GameObject(int x, int y, ObjectID id) {
+        this.x = x;
+        this.y = y;
+        this.id = id;
+        bounds = new Rectangle();
+    }
 
-    public ObjectID getId(){
-    return this.id;
+    public ObjectID getId() {
+        return this.id;
     }
 
     public double getX() {
@@ -40,6 +40,7 @@ bounds = new Rectangle();
 
     //pass the graphic to the render to be drawn on
     public abstract void drawImage(Graphics g);
+
     //using rectangle-based collision boxes
     public abstract Rectangle getBounds();
 }

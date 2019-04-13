@@ -82,8 +82,9 @@ public class Game extends JPanel implements Runnable {
                 if (!this.hasFocus()) this.requestFocus();
             }
             //check if game state changes during last update
-            if (running)
+            if (running) {
                 repaint();
+            }
             //increment rendered frames
             FPS++;
             //calculating frame per second (1000ms = 1s)
@@ -137,7 +138,11 @@ public class Game extends JPanel implements Runnable {
                 gamestate = 2;
             }
         } else if (gamestate == 2) {
-            try{Thread.sleep(5000);}catch (Exception e){e.printStackTrace();}
+            try {
+                Thread.sleep(5000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             gamestate = 3;
         } else if (objectManager.isRespawning()) {
             gamestate = 0;
@@ -168,7 +173,7 @@ public class Game extends JPanel implements Runnable {
             g2d.setColor(Color.white);
 
             g2d.drawString("Respawning...",
-                    DEFAULT_WIDTH / 2 + 64, DEFAULT_HEIGHT / 2);
+                    DEFAULT_WIDTH / 2 - 64, DEFAULT_HEIGHT / 2);
 
             g2d.setStroke(temp);
         } else if (gamestate == 2) {
@@ -178,8 +183,8 @@ public class Game extends JPanel implements Runnable {
             g2d.setStroke(new BasicStroke(2));
             g2d.setColor(Color.white);
 
-            g2d.drawString("Level 2...Loading",
-                    DEFAULT_WIDTH / 2 + 64, DEFAULT_HEIGHT / 2);
+            g2d.drawString(objectManager.getWinner() + " Won Level 1! Loading Level 2",
+                    DEFAULT_WIDTH / 2 - 64, DEFAULT_HEIGHT / 2);
 
             g2d.setStroke(temp);
         } else if (gamestate == -1) {
@@ -210,6 +215,7 @@ public class Game extends JPanel implements Runnable {
             g2d.scale(0.1, 0.1);
             g2d.drawImage(world, (DEFAULT_WIDTH) * 5 - getWidth(), DEFAULT_HEIGHT + getHeight() * 6, null);
         }
+        g2d.dispose();
     }
 
 

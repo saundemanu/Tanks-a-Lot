@@ -56,7 +56,7 @@ public class Tank extends GameObject {
     private Color outline = Color.BLACK;
     private Stroke stroke = new BasicStroke(4);
     private int angle;
-//controls
+    //controls
     private boolean up;
     private boolean left;
     private boolean down;
@@ -121,7 +121,7 @@ public class Tank extends GameObject {
 
             if (fire) {
                 if (System.currentTimeMillis() - firedTime >= FIRING_DELAY) {
-                    Bullet bullet = new Bullet((int) x + width/2 - 8, (int) y + height / 2 - height / 8, this.getId());
+                    Bullet bullet = new Bullet((int) x + width / 2 - 8, (int) y + height / 2 - height / 8, this.getId());
                     bullet.fire(angle);
                     if (ammo > 0) {
                         clip.add(bullet);
@@ -153,10 +153,10 @@ public class Tank extends GameObject {
         for (Item i : objectManager.getItemList()) {
             if (i.getBounds().intersects(getBounds()) && i.isActive()) {
                 if (i instanceof AmmoCrate) {
-                    for(Tank t: objectManager.getTankList())
+                    for (Tank t : objectManager.getTankList())
                         t.ammo = (i.getStat());
                 } else if (i instanceof HealthBoost) {
-                    for(Tank t: objectManager.getTankList())
+                    for (Tank t : objectManager.getTankList())
                         t.health = (i.getStat());
                 }
                 i.used();
@@ -167,9 +167,9 @@ public class Tank extends GameObject {
             if (t.getBounds().intersects(getBounds())) collision = true;
             for (Bullet b : clip) {
                 if (t.getBounds().intersects(b.getBounds()) && b.getOwner() != t.getId()) {
-                    for(Tank tank : objectManager.getTankList()) {
-                       if(t.getId() == tank.getId())
-                        tank.damage(b.getDamage());
+                    for (Tank tank : objectManager.getTankList()) {
+                        if (t.getId() == tank.getId())
+                            tank.damage(b.getDamage());
                     }
                     clipBuffer.add(b);
                 }

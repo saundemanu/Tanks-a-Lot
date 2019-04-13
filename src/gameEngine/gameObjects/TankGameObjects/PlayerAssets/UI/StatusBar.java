@@ -12,11 +12,11 @@ public abstract class StatusBar {
         this.MAX_STATUS = MAX_STATUS;
     }
 
-    public abstract void update(int x, int y,int status);
+    public abstract void update(int x, int y, int status);
 
     public abstract void drawImage(Graphics g);
 
-    protected int getMAX_STATUS(){
+    protected int getMAX_STATUS() {
         return this.MAX_STATUS;
     }
 

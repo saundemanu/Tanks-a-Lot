@@ -38,69 +38,75 @@ public class ObjectManager {
     private boolean playerTwoAction;
 
 
-     void init(Collection<GameObject> list){
-         clear();
-        for(GameObject obj : list){
-            if(obj instanceof Wall){wallList.add((Wall)obj);}
-            if(obj instanceof Tank){tankList.add((Tank)obj);}
-            if(obj instanceof Item){itemList.add((Item)obj);}
+    void init(Collection<GameObject> list) {
+        clear();
+        for (GameObject obj : list) {
+            if (obj instanceof Wall) {
+                wallList.add((Wall) obj);
+            }
+            if (obj instanceof Tank) {
+                tankList.add((Tank) obj);
+            }
+            if (obj instanceof Item) {
+                itemList.add((Item) obj);
+            }
         }
     }
 
 
-    public void update(){
+    public void update() {
 
-         for(Tank t : tankList){
-             if(t.getId() == ObjectID.PlayerOne){
-                 t.setMovement(playerOneUp, playerOneDown, playerOneLeft, playerOneRight, playerOneAction);
-             } else if (t.getId() == ObjectID.PlayerTwo){
-                 t.setMovement(playerTwoUp, playerTwoDown, playerTwoLeft, playerTwoRight, playerTwoAction);
-             }
-             t.update();
-         }
-         for(Item i: itemList){
-             i.respawn();
-         }
-
+        for (Tank t : tankList) {
+            if (t.getId() == ObjectID.PlayerOne) {
+                t.setMovement(playerOneUp, playerOneDown, playerOneLeft, playerOneRight, playerOneAction);
+            } else if (t.getId() == ObjectID.PlayerTwo) {
+                t.setMovement(playerTwoUp, playerTwoDown, playerTwoLeft, playerTwoRight, playerTwoAction);
+            }
+            t.update();
         }
+        for (Item i : itemList) {
+            i.respawn();
+        }
+
+    }
 
     public LinkedList<Tank> getTankList() {
         return tankList;
     }
 
-    public void respawn(){
-        for(Tank t : tankList){
+    public void respawn() {
+        for (Tank t : tankList) {
             t.respawn();
         }
-        for(Wall w : wallList){
-            if(w instanceof DestructibleWall){
+        for (Wall w : wallList) {
+            if (w instanceof DestructibleWall) {
                 ((DestructibleWall) w).repair();
             }
         }
-        for(Item i : itemList){
+        for (Item i : itemList) {
             i.respawn();
         }
     }
 
 
     public boolean isRespawning() {
-         for(Tank t:tankList) respawning = !t.checkSpawnDelay();
+        for (Tank t : tankList) respawning = !t.checkSpawnDelay();
         return respawning;
     }
 
-    public boolean isGameOver(){
-         for(Tank t:tankList){
-            if(t.isOutOfLives()) {
+    public boolean isGameOver() {
+        for (Tank t : tankList) {
+            if (t.isOutOfLives()) {
                 for (Tank tank : tankList) {
-                    if(!tank.isOutOfLives()) {
+                    if (!tank.isOutOfLives()) {
                         winner = tank.getId();
                         return true;
                     }
                 }
             }
-         }
+        }
 
-         return false;
+        return false;
     }
 
     public ObjectID getWinner() {
@@ -109,28 +115,27 @@ public class ObjectManager {
 
     public void drawImages(Graphics g) {
 
-       for(Wall w: wallList){
-           w.drawImage(g);
-       }
+        for (Wall w : wallList) {
+            w.drawImage(g);
+        }
 
-       for(Item i : itemList){
+        for (Item i : itemList) {
             i.drawImage(g);
         }
-      for(Tank t : tankList){
-          t.drawImage(g);
-      }
+        for (Tank t : tankList) {
+            t.drawImage(g);
+        }
 
     }
-    private void clear(){
-         if(!itemList.isEmpty())
-         itemList.clear();
-        if(!wallList.isEmpty())
-         wallList.clear();
-        if(!tankList.isEmpty())
-         tankList.clear();
+
+    private void clear() {
+        if (!itemList.isEmpty())
+            itemList.clear();
+        if (!wallList.isEmpty())
+            wallList.clear();
+        if (!tankList.isEmpty())
+            tankList.clear();
     }
-
-
 
 
     public LinkedList<Wall> getWallList() {
