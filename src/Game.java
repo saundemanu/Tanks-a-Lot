@@ -131,7 +131,7 @@ class Game extends JPanel implements Runnable {
                 p2Camera.update(t);
         }
         if (objectManager.isGameOver()) {
-            if (gamestate == 3) {
+            if (gamestate > 2) {
                 gamestate = -1;
             } else {
                 levelLoader.loadLevel("/Tanks_Level2.png");
