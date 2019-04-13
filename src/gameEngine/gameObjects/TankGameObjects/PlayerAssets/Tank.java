@@ -4,14 +4,14 @@ import gameEngine.gameObjects.TankGameObjects.LevelAssets.Item;
 import gameEngine.gameObjects.TankGameObjects.LevelAssets.AmmoCrate;
 import gameEngine.gameObjects.TankGameObjects.LevelAssets.DestructibleWall;
 import gameEngine.gameObjects.TankGameObjects.LevelAssets.Wall;
-import gameEngine.Util.ObjectID;
-import gameEngine.gameObjects.GameObject;
-import gameEngine.Util.ObjectManager;
 import gameEngine.gameObjects.TankGameObjects.LevelAssets.HealthBoost;
+
 import gameEngine.gameObjects.TankGameObjects.PlayerAssets.UI.AmmoBar;
 import gameEngine.gameObjects.TankGameObjects.PlayerAssets.UI.HealthBar;
 import gameEngine.gameObjects.TankGameObjects.PlayerAssets.UI.LifeCount;
-
+import gameEngine.gameObjects.ObjectID;
+import gameEngine.gameObjects.GameObject;
+import gameEngine.Util.ObjectManager;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -113,7 +113,7 @@ public class Tank extends GameObject {
 
             if (fire) {
                 if (System.currentTimeMillis() - firedTime >= FIRING_DELAY) {
-                    Bullet bullet = new Bullet((int) x + width - width / 4, (int) y + height / 2 - height / 8, this.getId());
+                    Bullet bullet = new Bullet((int) x + width/2 - 8, (int) y + height / 2 - height / 8, this.getId());
                     bullet.fire(angle);
                     if (ammo > 0) {
                         clip.add(bullet);
@@ -128,34 +128,33 @@ public class Tank extends GameObject {
     }
 
     private void checkCollision() {
-     for (Wall wall : objectManager.getWallList()) {
+        for (Wall wall : objectManager.getWallList()) {
             if (getBounds().intersects(wall.getBounds()) && !wall.isDestructed()) {
-                    collision = true;
-                }
-            for(Bullet b: clip){
-                if (b.getBounds().intersects(wall.getBounds())){
-                    if(wall instanceof DestructibleWall){
+                collision = true;
+            }
+            for (Bullet b : clip) {
+                if (b.getBounds().intersects(wall.getBounds())) {
+                    if (wall instanceof DestructibleWall) {
                         ((DestructibleWall) wall).destruct();
-                    }
-                    else if(b.isActive())
-                    b.collision(wall);
+                    } else if (b.isActive())
+                        b.collision(wall);
                     else clipBuffer.add(b);
                 }
             }
+        }
+        for (Item i : objectManager.getItemList()) {
+            if (i.getBounds().intersects(getBounds()) && i.isActive()) {
+                if (i instanceof AmmoCrate) {
+                    ammo = (i.getStat());
+                } else if (i instanceof HealthBoost) {
+                    health = i.getStat();
+                }
+                i.used();
             }
-     for(Item i : objectManager.getItemList()){
-         if(i.getBounds().intersects(getBounds()) && i.isActive()){
-             if(i instanceof AmmoCrate){
-                 ammo = (i.getStat());
-             }else if(i instanceof HealthBoost){
-                 health = i.getStat();
-             }
-             i.used();
-         }
-     }
-        for(Tank t : objectManager.getTankList()) {
-            if(t.equals(this)) continue;
-            if(t.getBounds().intersects(getBounds())) collision = true;
+        }
+        for (Tank t : objectManager.getTankList()) {
+            if (t.equals(this)) continue;
+            if (t.getBounds().intersects(getBounds())) collision = true;
             for (Bullet b : clip) {
                 if (t.getBounds().intersects(b.getBounds()) && b.getOwner() != t.getId()) {
                     t.damage(b.getDamage());
@@ -218,7 +217,7 @@ public class Tank extends GameObject {
         System.out.println(getId() + " died");
         if (lives > 0) {
             //respawn
-           objectManager.respawn();
+            objectManager.respawn();
 
         } else {
             System.out.println(getId() + " is out of lives");
@@ -234,7 +233,6 @@ public class Tank extends GameObject {
     public boolean checkSpawnDelay() {
         return (System.currentTimeMillis() - deathTime) >= SPAWN_DELAY;
     }
-
 
 
     public void respawn() {

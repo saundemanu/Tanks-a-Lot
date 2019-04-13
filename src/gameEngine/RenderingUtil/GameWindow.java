@@ -1,6 +1,5 @@
 package gameEngine.RenderingUtil;
 
-import gameEngine.Game;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +7,7 @@ import java.awt.*;
 
 public class GameWindow extends JFrame {
 
-    public GameWindow(int width, int height, String name, Game game){
+    public GameWindow(int width, int height, String name, JPanel game){
 
         //https://javarevisited.blogspot.com/2011/04/synchronization-in-java-synchronized.html
         //https://www.geeksforgeeks.org/synchronized-in-java/

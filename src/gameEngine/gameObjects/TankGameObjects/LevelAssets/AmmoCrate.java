@@ -1,6 +1,6 @@
 package gameEngine.gameObjects.TankGameObjects.LevelAssets;
 
-import gameEngine.Util.ObjectID;
+import gameEngine.gameObjects.ObjectID;
 
 import java.awt.*;
 
@@ -13,7 +13,7 @@ public class AmmoCrate extends Item {
 
     @Override
     public void drawImage(Graphics g) {
-        if(isActive()) {
+        if (isActive()) {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setColor(Color.MAGENTA);
             g2d.fill(bounds);

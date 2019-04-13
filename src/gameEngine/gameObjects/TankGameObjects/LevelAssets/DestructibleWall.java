@@ -1,6 +1,6 @@
 package gameEngine.gameObjects.TankGameObjects.LevelAssets;
 
-import gameEngine.Util.ObjectID;
+import gameEngine.gameObjects.ObjectID;
 
 import java.awt.*;
 
@@ -21,4 +21,8 @@ public class DestructibleWall extends Wall {
         g2d.fill(this.bounds);
     }
     }
+    public void repair(){
+        destructed = false;
+    }
+
 }

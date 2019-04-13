@@ -1,12 +1,12 @@
 package gameEngine.gameObjects.TankGameObjects.PlayerAssets;
 
 import gameEngine.gameObjects.TankGameObjects.LevelAssets.DestructibleWall;
-import gameEngine.Util.ObjectID;
+import gameEngine.gameObjects.ObjectID;
 import gameEngine.gameObjects.GameObject;
 
 import java.awt.*;
 
-public class Bullet extends GameObject  {
+public class Bullet extends GameObject {
 
     private ObjectID owner;
     private int TRAVEL_SPEED = 20;
@@ -29,24 +29,24 @@ public class Bullet extends GameObject  {
         x += vx;
         y += vy;
 
-        }
+    }
 
-    void fire(int angle){
+    void fire(int angle) {
         vx = (TRAVEL_SPEED * Math.cos(Math.toRadians(angle)));
         vy = (TRAVEL_SPEED * Math.sin(Math.toRadians(angle)));
     }
 
     @Override
     public void drawImage(Graphics g) {
-         g.setColor(Color.MAGENTA);
-         g.fillOval((int)x, (int)y, width, height);
+        g.setColor(Color.MAGENTA);
+        g.fillOval((int) x, (int) y, width, height);
         g.setColor(Color.lightGray);
-        g.drawOval((int)x, (int)y, width, height);
+        g.drawOval((int) x, (int) y, width, height);
     }
 
     @Override
     public Rectangle getBounds() {
-        bounds.setBounds((int)x, (int)y, width, height);
+        bounds.setBounds((int) x, (int) y, width, height);
         return bounds;
     }
 
@@ -63,9 +63,9 @@ public class Bullet extends GameObject  {
         return active;
     }
 
-    public void collision(GameObject obj){
-        if(obj instanceof DestructibleWall) rebounds +=2;
-        if(rebounds < MAX_COLLISIONS && active) {
+    public void collision(GameObject obj) {
+        if (obj instanceof DestructibleWall) rebounds += 2;
+        if (rebounds < MAX_COLLISIONS && active) {
             double objBottom = obj.getY() + obj.getHeight();
             double objRight = obj.getX() + obj.getWidth();
             double bulBottom = getY() + getHeight();
@@ -84,14 +84,14 @@ public class Bullet extends GameObject  {
                 vy *= -1;
             }
             //left collision
-            else if (left < right && left < top && left < bottom){
+            else if (left < right && left < top && left < bottom) {
                 vx *= -1;
             }
             //right collision
             else if (right < left && right < top && right < bottom) {
                 vx *= -1;
-        }
+            }
             rebounds++;
-        }else active = false;
+        } else active = false;
     }
 }

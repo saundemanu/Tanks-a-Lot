@@ -1,5 +1,7 @@
 package gameEngine.Util;
 
+import gameEngine.gameObjects.ObjectID;
+import gameEngine.gameObjects.TankGameObjects.LevelAssets.DestructibleWall;
 import gameEngine.gameObjects.TankGameObjects.LevelAssets.Item;
 import gameEngine.gameObjects.TankGameObjects.LevelAssets.Wall;
 import gameEngine.gameObjects.TankGameObjects.PlayerAssets.Tank;
@@ -70,6 +72,11 @@ public class ObjectManager {
         for(Tank t : tankList){
             t.respawn();
         }
+        for(Wall w : wallList){
+            if(w instanceof DestructibleWall){
+                ((DestructibleWall) w).repair();
+            }
+        }
         for(Item i : itemList){
             i.respawn();
         }
@@ -104,7 +111,8 @@ public class ObjectManager {
        for(Wall w: wallList){
            w.drawImage(g);
        }
-        for(Item i : itemList){
+
+       for(Item i : itemList){
             i.drawImage(g);
         }
       for(Tank t : tankList){

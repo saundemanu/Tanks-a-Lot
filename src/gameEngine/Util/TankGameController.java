@@ -1,8 +1,5 @@
 package gameEngine.Util;
 
-import gameEngine.Game;
-import gameEngine.gameObjects.GameObject;
-
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 

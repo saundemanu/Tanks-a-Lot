@@ -1,11 +1,11 @@
 package gameEngine.Util;
 
+import gameEngine.gameObjects.ObjectID;
 import gameEngine.gameObjects.TankGameObjects.LevelAssets.AmmoCrate;
 import gameEngine.gameObjects.TankGameObjects.LevelAssets.DestructibleWall;
 import gameEngine.gameObjects.TankGameObjects.LevelAssets.HealthBoost;
 import gameEngine.gameObjects.TankGameObjects.LevelAssets.IndestructibleWall;
 import gameEngine.gameObjects.TankGameObjects.PlayerAssets.Tank;
-import gameEngine.RenderingUtil.ImageLoader;
 import gameEngine.gameObjects.GameObject;
 
 import java.awt.*;

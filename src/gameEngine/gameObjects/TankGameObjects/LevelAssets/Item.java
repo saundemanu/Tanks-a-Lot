@@ -1,7 +1,7 @@
 package gameEngine.gameObjects.TankGameObjects.LevelAssets;
 
 
-import gameEngine.Util.ObjectID;
+import gameEngine.gameObjects.ObjectID;
 import gameEngine.gameObjects.GameObject;
 
 
@@ -13,26 +13,26 @@ public abstract class Item extends GameObject {
     protected int width = 32, height = 32;
 
 
-
     protected Item(int x, int y, ObjectID id) {
         super(x, y, id);
         active = true;
     }
 
-    public int getStat(){
+    public int getStat() {
         return this.stat;
     }
 
-    public boolean isActive(){
+    public boolean isActive() {
         return this.active;
     }
 
-    public void respawn(){
-        if(!active && System.currentTimeMillis() - SpawnTimer >= SPAWN_DELAY){
+    public void respawn() {
+        if (!active && System.currentTimeMillis() - SpawnTimer >= SPAWN_DELAY) {
             active = true;
         }
     }
-    public void used(){
+
+    public void used() {
         SpawnTimer = System.currentTimeMillis();
         active = false;
     }
