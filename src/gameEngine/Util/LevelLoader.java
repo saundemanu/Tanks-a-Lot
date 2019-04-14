@@ -62,11 +62,4 @@ public class LevelLoader {
         objectManager.init(levelObjects);
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
 }
