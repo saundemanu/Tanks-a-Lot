@@ -52,48 +52,11 @@ class Game extends JPanel implements Runnable {
 
     @Override
     public void run() {
-        //Based on Minecraft game loop by Notch, chosen for consistent update/gameplay regardless of cpu
-        long current;
-        double elapsed = 0;
-        double target = 60.0;
-        //One second in nano seconds/target refresh rate in seconds
-        double ns = 1000000000 / target;
-        long last = System.nanoTime();
-        //thread-safe ms
-        long timer = System.currentTimeMillis();
-        //store frame amount rendered per second
-        int FPS = 0;
-        int up = 0;
-        while (running) {
-            //fetch current time in loop
-            current = System.nanoTime();
-            //calculate time since last iteration
-            elapsed += (current - last) / ns;
-            //set time for next iteration
-            last = current;
-            while (elapsed >= 1) {
-                //updates game state regardless of rendering
-                update();
-                up++;
-                elapsed--;
-                //fixes out of window clicking error
-                if (!this.hasFocus()) this.requestFocus();
-            }
-            //check if game state changes during last update
-            if (running) {
-                repaint();
-            }
-            //increment rendered frames
-            FPS++;
-            //calculating frame per second (1000ms = 1s)
-            //Prints out current FPS rate and resets for next second
-            if (System.currentTimeMillis() - timer > 1000) {
-                timer += 1000;
-                System.out.println("FPS: " + FPS + "\tUpdates: " + up + "\tState: " + gamestate);
-                FPS = 0;
-                up = 0;
-            }
 
+        while (running) {
+            update();
+            repaint();
+            try{Thread.sleep(1000 / 72);}catch(Exception e){e.printStackTrace();}
         }
         stop();
     }
@@ -197,8 +160,8 @@ class Game extends JPanel implements Runnable {
             g2d.drawString(objectManager.getWinner()
                             + " won Level 1 in "
                             + (System.currentTimeMillis() - timer) / 1000
-                            + " seconds Loading Level 2",
-                    DEFAULT_WIDTH / 2 - 72, DEFAULT_HEIGHT / 2);
+                            + " seconds... Loading Level 2...",
+                    DEFAULT_WIDTH / 2 - 84, DEFAULT_HEIGHT / 2);
 
             g2d.setStroke(temp);
         } else if (gamestate == -1) {
