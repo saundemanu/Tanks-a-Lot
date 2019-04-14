@@ -142,43 +142,43 @@ public class ObjectManager {
         return wallList;
     }
 
-    public void setPlayerOneDown(boolean playerOneDown) {
+     void setPlayerOneDown(boolean playerOneDown) {
         this.playerOneDown = playerOneDown;
     }
 
-    public void setPlayerOneUp(boolean playerOneUp) {
+     void setPlayerOneUp(boolean playerOneUp) {
         this.playerOneUp = playerOneUp;
     }
 
-    public void setPlayerOneLeft(boolean playerOneLeft) {
+     void setPlayerOneLeft(boolean playerOneLeft) {
         this.playerOneLeft = playerOneLeft;
     }
 
-    public void setPlayerOneRight(boolean playerOneRight) {
+     void setPlayerOneRight(boolean playerOneRight) {
         this.playerOneRight = playerOneRight;
     }
 
-    public void setPlayerOneAction(boolean playerOneAction) {
+     void setPlayerOneAction(boolean playerOneAction) {
         this.playerOneAction = playerOneAction;
     }
 
-    public void setPlayerTwoDown(boolean playerTwoDown) {
+     void setPlayerTwoDown(boolean playerTwoDown) {
         this.playerTwoDown = playerTwoDown;
     }
 
-    public void setPlayerTwoUp(boolean playerTwoUp) {
+     void setPlayerTwoUp(boolean playerTwoUp) {
         this.playerTwoUp = playerTwoUp;
     }
 
-    public void setPlayerTwoLeft(boolean playerTwoLeft) {
+     void setPlayerTwoLeft(boolean playerTwoLeft) {
         this.playerTwoLeft = playerTwoLeft;
     }
 
-    public void setPlayerTwoRight(boolean playerTwoRight) {
+     void setPlayerTwoRight(boolean playerTwoRight) {
         this.playerTwoRight = playerTwoRight;
     }
 
-    public void setPlayerTwoAction(boolean playerTwoAction) {
+     void setPlayerTwoAction(boolean playerTwoAction) {
         this.playerTwoAction = playerTwoAction;
     }
 
