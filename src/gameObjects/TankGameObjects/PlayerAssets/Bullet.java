@@ -1,8 +1,8 @@
-package gameEngine.gameObjects.TankGameObjects.PlayerAssets;
+package gameObjects.TankGameObjects.PlayerAssets;
 
-import gameEngine.gameObjects.TankGameObjects.LevelAssets.DestructibleWall;
-import gameEngine.gameObjects.ObjectID;
-import gameEngine.gameObjects.GameObject;
+import gameObjects.TankGameObjects.LevelAssets.DestructibleWall;
+import gameObjects.ObjectID;
+import gameObjects.GameObject;
 
 import java.awt.*;
 
@@ -64,8 +64,9 @@ public class Bullet extends GameObject {
     }
 
     void collision(GameObject obj) {
-        if (obj instanceof DestructibleWall) rebounds += 2;
+        if (obj instanceof DestructibleWall) rebounds += 3;
         if (rebounds < MAX_COLLISIONS && active) {
+            //detecting collision sides for reflection
             double objBottom = obj.getY() + obj.getHeight();
             double objRight = obj.getX() + obj.getWidth();
             double bulBottom = getY() + getHeight();
@@ -77,23 +78,26 @@ public class Bullet extends GameObject {
             double right = objRight - getX();
             //top collision
             if (top < bottom && top < left && top < right) {
-                vy *= -1;
-                vx *= .9;
+                vy *= -.9;
+                vx *= .8;
             }
             //bottom collision
             else if (bottom < top && bottom < left && bottom < right) {
-                vy *= -1;
-                vx *= .9;
+                vy *= -.9;
+                vx *= .8;
             }
             //left collision
             else if (left < right && left < top && left < bottom) {
-                vx *= -1;
-                vy *= .9;
+                vx *= -.9;
+                vy *= .8;
             }
             //right collision
             else if (right < left && right < top && right < bottom) {
-                vx *= -1;
-                vy *= .9;
+                vx *= -.9;
+                vy *= .8;
+            } else {
+                vx*= -.9;
+                vy*= -.9;
             }
             rebounds++;
         } else active = false;

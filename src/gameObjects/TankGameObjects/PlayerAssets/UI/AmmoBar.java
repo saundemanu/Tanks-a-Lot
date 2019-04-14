@@ -1,4 +1,4 @@
-package gameEngine.gameObjects.TankGameObjects.PlayerAssets.UI;
+package gameObjects.TankGameObjects.PlayerAssets.UI;
 
 import java.awt.*;
 

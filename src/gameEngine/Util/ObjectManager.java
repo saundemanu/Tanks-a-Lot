@@ -1,12 +1,12 @@
 package gameEngine.Util;
 
-import gameEngine.gameObjects.ObjectID;
-import gameEngine.gameObjects.TankGameObjects.LevelAssets.DestructibleWall;
-import gameEngine.gameObjects.TankGameObjects.LevelAssets.Item;
-import gameEngine.gameObjects.TankGameObjects.LevelAssets.Wall;
-import gameEngine.gameObjects.TankGameObjects.PlayerAssets.Tank;
+import gameObjects.ObjectID;
+import gameObjects.TankGameObjects.LevelAssets.DestructibleWall;
+import gameObjects.TankGameObjects.LevelAssets.Item;
+import gameObjects.TankGameObjects.LevelAssets.Wall;
+import gameObjects.TankGameObjects.PlayerAssets.Tank;
 
-import gameEngine.gameObjects.GameObject;
+import gameObjects.GameObject;
 
 import java.awt.*;
 import java.util.Collection;
@@ -27,9 +27,7 @@ public class ObjectManager {
     private boolean playerOneAction;
     private ObjectID winner;
 
-    public LinkedList<Item> getItemList() {
-        return itemList;
-    }
+
 
     private boolean playerTwoDown;
     private boolean playerTwoUp;
@@ -53,6 +51,10 @@ public class ObjectManager {
         }
     }
 
+    public LinkedList<Wall> getWallList() {
+        return wallList;
+    }
+
 
     public void update() {
 
@@ -73,6 +75,11 @@ public class ObjectManager {
     public LinkedList<Tank> getTankList() {
         return tankList;
     }
+
+    public LinkedList<Item> getItemList() {
+        return itemList;
+    }
+
 
     public void respawn() {
         for (Tank t : tankList) {
@@ -138,9 +145,7 @@ public class ObjectManager {
     }
 
 
-    public LinkedList<Wall> getWallList() {
-        return wallList;
-    }
+
 
      void setPlayerOneDown(boolean playerOneDown) {
         this.playerOneDown = playerOneDown;

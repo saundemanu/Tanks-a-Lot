@@ -1,6 +1,6 @@
 import gameEngine.Util.LevelLoader;
-import gameEngine.gameObjects.ObjectID;
-import gameEngine.gameObjects.TankGameObjects.PlayerAssets.Tank;
+import gameObjects.ObjectID;
+import gameObjects.TankGameObjects.PlayerAssets.Tank;
 import gameEngine.RenderingUtil.Camera;
 import gameEngine.RenderingUtil.GameWindow;
 import gameEngine.Util.TankGameController;
@@ -18,18 +18,17 @@ class Game extends JPanel implements Runnable {
 //    https://howtodoinjava.com/java/serialization/serialversionuid/
     private static final long serialVersionUID = 1L;
 
-    private int gamestate;
     private static final int DEFAULT_WIDTH = 1000;
     private static final int DEFAULT_HEIGHT = DEFAULT_WIDTH / 12 * 9;
     private final String NAME = "Tanks A Lot";
+    private long timer;
 
     private Thread thread;
     private boolean running = false;
     private final ObjectManager objectManager = new ObjectManager();
 
-    //    private Graphics2D bufferTwo;
-//    private BufferedImage map;
-    private final int MAP_SCALE = 32;
+    private int gamestate;
+
     private Camera p1Camera = new Camera(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     private Camera p2Camera = new Camera(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     private final LevelLoader levelLoader;
@@ -40,10 +39,9 @@ class Game extends JPanel implements Runnable {
         new GameWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, NAME, this);
         this.addKeyListener(new TankGameController(objectManager));
         this.requestFocus();
-        levelLoader = new LevelLoader(objectManager, MAP_SCALE);
+        levelLoader = new LevelLoader(objectManager, 32);
         levelLoader.loadLevel("/Tanks_Level1.png");
-        gamestate = 1;
-
+        gamestate = -2;
     }
 
 
@@ -130,26 +128,39 @@ class Game extends JPanel implements Runnable {
             else if (t.getId() == ObjectID.PlayerTwo)
                 p2Camera.update(t);
         }
+
         if (objectManager.isGameOver()) {
+            //if level two over, game over
             if (gamestate > 2) {
                 gamestate = -1;
             } else {
+                //if level one over, load level 2
                 levelLoader.loadLevel("/Tanks_Level2.png");
                 gamestate = 2;
             }
+            //wait for level 2;
         } else if (gamestate == 2) {
             try {
                 Thread.sleep(5000);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            //start level 2
             gamestate = 3;
+            timer = System.currentTimeMillis();
+            //respawning
         } else if (objectManager.isRespawning()) {
             gamestate = 0;
-        } else if (gamestate < 2) {
+            //if game started, start timer
+        } else if (gamestate == -2) {
+            gamestate = 1;
+            timer = System.currentTimeMillis();
+        } else if (gamestate == 0) {
             gamestate = 1;
         }
+
         //Key:
+        //-2 is game start;
         //-1 is Game End
         //0 is respawning
         //1 is Map 1 Playing
@@ -183,8 +194,11 @@ class Game extends JPanel implements Runnable {
             g2d.setStroke(new BasicStroke(2));
             g2d.setColor(Color.white);
 
-            g2d.drawString(objectManager.getWinner() + " Won Level 1! Loading Level 2",
-                    DEFAULT_WIDTH / 2 - 64, DEFAULT_HEIGHT / 2);
+            g2d.drawString(objectManager.getWinner()
+                            + " won Level 1 in "
+                            + (System.currentTimeMillis() - timer) / 1000
+                            + " seconds Loading Level 2",
+                    DEFAULT_WIDTH / 2 - 72, DEFAULT_HEIGHT / 2);
 
             g2d.setStroke(temp);
         } else if (gamestate == -1) {
@@ -194,7 +208,10 @@ class Game extends JPanel implements Runnable {
             g2d.setStroke(new BasicStroke(2));
             g2d.setColor(Color.white);
 
-            g2d.drawString("Game Over\n " + objectManager.getWinner() + " Won!",
+            g2d.drawString(objectManager.getWinner()
+                            + " won Level 1 in "
+                            + (System.currentTimeMillis() - timer) / 1000
+                            + "Game Over",
                     DEFAULT_WIDTH / 2 - 64, DEFAULT_HEIGHT / 2);
 
             g2d.setStroke(temp);
@@ -214,6 +231,15 @@ class Game extends JPanel implements Runnable {
             g2d.drawLine(DEFAULT_WIDTH / 2, 0, DEFAULT_WIDTH / 2, DEFAULT_HEIGHT);
             g2d.scale(0.1, 0.1);
             g2d.drawImage(world, (DEFAULT_WIDTH) * 5 - getWidth(), DEFAULT_HEIGHT + getHeight() * 6, null);
+            //timer
+            g2d.scale(10, 10);
+            g2d.setColor(Color.CYAN);
+            g2d.fillRect(DEFAULT_WIDTH / 2 - 74, 50, 134, 20);
+            g2d.setColor(Color.gray);
+            g2d.fillRect(DEFAULT_WIDTH / 2 - 72, 52, 128, 16);
+            g2d.setColor(Color.white);
+            g2d.drawString("Time: " + (System.currentTimeMillis() - timer) / 1000 + ": " +
+                    (System.currentTimeMillis() - timer) % 1000, DEFAULT_WIDTH / 2 - 64, 64);
         }
         g2d.dispose();
     }

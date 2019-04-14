@@ -1,6 +1,6 @@
-package gameEngine.gameObjects.TankGameObjects.LevelAssets;
+package gameObjects.TankGameObjects.LevelAssets;
 
-import gameEngine.gameObjects.ObjectID;
+import gameObjects.ObjectID;
 
 import java.awt.*;
 

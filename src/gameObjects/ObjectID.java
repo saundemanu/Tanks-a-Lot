@@ -1,4 +1,4 @@
-package gameEngine.gameObjects;
+package gameObjects;
 
 public enum ObjectID {
     PlayerOne(),

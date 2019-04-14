@@ -1,16 +1,16 @@
-package gameEngine.gameObjects.TankGameObjects.PlayerAssets;
+package gameObjects.TankGameObjects.PlayerAssets;
 
-import gameEngine.gameObjects.TankGameObjects.LevelAssets.Item;
-import gameEngine.gameObjects.TankGameObjects.LevelAssets.AmmoCrate;
-import gameEngine.gameObjects.TankGameObjects.LevelAssets.DestructibleWall;
-import gameEngine.gameObjects.TankGameObjects.LevelAssets.Wall;
-import gameEngine.gameObjects.TankGameObjects.LevelAssets.HealthBoost;
+import gameObjects.TankGameObjects.LevelAssets.Item;
+import gameObjects.TankGameObjects.LevelAssets.AmmoCrate;
+import gameObjects.TankGameObjects.LevelAssets.DestructibleWall;
+import gameObjects.TankGameObjects.LevelAssets.Wall;
+import gameObjects.TankGameObjects.LevelAssets.HealthBoost;
 
-import gameEngine.gameObjects.TankGameObjects.PlayerAssets.UI.AmmoBar;
-import gameEngine.gameObjects.TankGameObjects.PlayerAssets.UI.HealthBar;
-import gameEngine.gameObjects.TankGameObjects.PlayerAssets.UI.LifeCount;
-import gameEngine.gameObjects.ObjectID;
-import gameEngine.gameObjects.GameObject;
+import gameObjects.TankGameObjects.PlayerAssets.UI.AmmoBar;
+import gameObjects.TankGameObjects.PlayerAssets.UI.HealthBar;
+import gameObjects.TankGameObjects.PlayerAssets.UI.LifeCount;
+import gameObjects.ObjectID;
+import gameObjects.GameObject;
 import gameEngine.Util.ObjectManager;
 
 import java.awt.*;
@@ -25,7 +25,7 @@ public class Tank extends GameObject {
     private final int SPAWN_DELAY = 5000; //spawn delay in ms, locks controls;
     private final int MAX_LIVES = 3;
     private final int MAX_HEALTH = 30;
-    private final int MAX_AMMO = 10;
+    private final int MAX_AMMO = 5;
     private final int FIRING_DELAY = 1000;
     //Tank UI
     private HealthBar healthbar;
@@ -33,19 +33,18 @@ public class Tank extends GameObject {
     private AmmoBar ammoBar;
 
     //stat trackers
-    private boolean outOfLives;
     private int lives;
     private int health;
     private int ammo;
+    private boolean alive = true;
+    private long deathTime = 0;
+    private long firedTime = 0;
 
 
     //list of active bullets
     private LinkedList<Bullet> clip = new LinkedList();
     //list of dead bullets, prevents concurrent Modification exception
     private LinkedList<Bullet> clipBuffer = new LinkedList<>();
-    private boolean alive = true;
-    private long deathTime = 0;
-    private long firedTime = 0;
 
     //tank drawing
     private Rectangle base;
@@ -153,9 +152,9 @@ public class Tank extends GameObject {
         for (Item i : objectManager.getItemList()) {
             if (i.getBounds().intersects(getBounds()) && i.isActive()) {
                 if (i instanceof AmmoCrate)
-                        ammo = (i.getStat());
+                    ammo = (i.getStat());
                 else if (i instanceof HealthBoost)
-                        health = (i.getStat());
+                    health = (i.getStat());
                 i.used();
             }
         }
@@ -164,7 +163,7 @@ public class Tank extends GameObject {
             if (t.getBounds().intersects(getBounds())) collision = true;
             for (Bullet b : clip) {
                 if (t.getBounds().intersects(b.getBounds()) && b.getOwner() != t.getId()) {
-                            t.damage(b.getDamage());
+                    t.damage(b.getDamage());
 
                     clipBuffer.add(b);
                 }
@@ -197,16 +196,6 @@ public class Tank extends GameObject {
         return bounds;
     }
 
-    public void update() {
-        Movement();
-        for (Bullet b : clip) {
-            b.update();
-        }
-        checkCollision();
-        healthbar.update((int) x, (int) y, health);
-        lifeCount.update((int) x, (int) y, lives);
-        ammoBar.update((int) x, (int) y, ammo);
-    }
 
     private void damage(int amount) {
         if (alive) {
@@ -229,12 +218,11 @@ public class Tank extends GameObject {
 
         } else {
             System.out.println(getId() + " is out of lives");
-            outOfLives = true;
         }
     }
 
     public boolean isOutOfLives() {
-        return outOfLives;
+        return lives <= 0;
     }
 
     //checks difference in death time, return true if ready to respawn;
@@ -249,6 +237,17 @@ public class Tank extends GameObject {
         health = MAX_HEALTH;
         ammo = MAX_AMMO;
         deathTime = System.currentTimeMillis();
+    }
+
+    public void update() {
+        Movement();
+        for (Bullet b : clip) {
+            b.update();
+        }
+        checkCollision();
+        healthbar.update((int) x, (int) y, health);
+        lifeCount.update((int) x, (int) y, lives);
+        ammoBar.update((int) x, (int) y, ammo);
     }
 
     @Override
@@ -268,6 +267,7 @@ public class Tank extends GameObject {
             Shape top = transform.createTransformedShape(cap);
             AffineTransform old = g2d.getTransform();
             g2d.setStroke(stroke);
+            //tank drawing
             g2d.setColor(outline);
             g2d.draw(bottom);
             g2d.setColor(drawColor);
@@ -281,6 +281,7 @@ public class Tank extends GameObject {
             g2d.setColor(drawColor);
             g2d.fill(top);
             g2d.setTransform(old);
+            //stat bars
             healthbar.drawImage(g2d);
             lifeCount.drawImage(g2d);
             ammoBar.drawImage(g2d);

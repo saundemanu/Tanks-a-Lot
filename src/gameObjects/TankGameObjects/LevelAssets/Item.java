@@ -1,8 +1,8 @@
-package gameEngine.gameObjects.TankGameObjects.LevelAssets;
+package gameObjects.TankGameObjects.LevelAssets;
 
 
-import gameEngine.gameObjects.ObjectID;
-import gameEngine.gameObjects.GameObject;
+import gameObjects.ObjectID;
+import gameObjects.GameObject;
 
 
 public abstract class Item extends GameObject {

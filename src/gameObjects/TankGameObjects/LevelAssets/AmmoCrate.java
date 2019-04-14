@@ -1,6 +1,6 @@
-package gameEngine.gameObjects.TankGameObjects.LevelAssets;
+package gameObjects.TankGameObjects.LevelAssets;
 
-import gameEngine.gameObjects.ObjectID;
+import gameObjects.ObjectID;
 
 import java.awt.*;
 
@@ -8,7 +8,7 @@ public class AmmoCrate extends Item {
     public AmmoCrate(int x, int y, ObjectID id) {
         super(x, y, id);
         bounds.setBounds(x, y, width, height);
-        stat = 10;
+        stat = 5;
     }
 
     @Override

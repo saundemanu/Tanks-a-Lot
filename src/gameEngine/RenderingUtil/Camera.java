@@ -1,7 +1,7 @@
 package gameEngine.RenderingUtil;
 
 
-import gameEngine.gameObjects.GameObject;
+import gameObjects.GameObject;
 
 public class Camera {
     private float x, y;
