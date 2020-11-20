@@ -1,7 +1,6 @@
 package gameEngine.Util;
 
 import gameObjects.ObjectID;
-import gameObjects.TankGameObjects.LevelAssets.DestructibleWall;
 import gameObjects.TankGameObjects.LevelAssets.Item;
 import gameObjects.TankGameObjects.LevelAssets.Wall;
 import gameObjects.TankGameObjects.PlayerAssets.Tank;

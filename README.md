@@ -1,7 +1,5 @@
-# csc413-TankGame
+# Tanks a lot 
 
-## Student Name : Emanuel Saunders
-## Student ID : 917273245
 ***
 
  **Built with:** IntelliJ IDEA 2018.3.4(Community Edition) with 
@@ -12,6 +10,7 @@ JVM: OpenJDK 64-Bit Server VM by Jetbrains s.r.o
 
 with JDK 11
 
+Working Directory is 
 ## Run instructions:
 
 Download and open/execute Jar
