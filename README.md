@@ -26,7 +26,7 @@ Left-hand side
 Movement - WASD
 Fire - Space
 
-##Player Two:
+### Player Two:
 Right-hand side
 Movement - Directional keys
 Fire - Enter
